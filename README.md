@@ -1,4 +1,6 @@
-A DSL for Groovy to wrap around the Apache VFS libraries
+A collection of Gradle plugins.
+
+
 
 =====================
 ```gradle
