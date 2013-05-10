@@ -1,0 +1,11 @@
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.6'
+}
