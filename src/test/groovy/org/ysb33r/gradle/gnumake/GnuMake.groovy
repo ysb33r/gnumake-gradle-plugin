@@ -118,7 +118,19 @@ class GnuMakeSpec extends spock.lang.Specification {
         gnumake.cmdargs[0] == '-f'
         gnumake.cmdargs[1] == "../../Makefile"
     }
-    
+ 
+    def "chDir affects -C"() {
+        given:
+        gnumake.chDir = './change/here'
+        gnumake.buildCmdArgs()
+        
+        expect:
+        gnumake.cmdargs.size() == 2
+        gnumake.cmdargs[0] == '-C'
+        gnumake.cmdargs[1] == "./change/here"
+
+    }
+  
     def "includeDirs adds -I plus path"() {
         given:
         gnumake.includeDirs = [ 'localDir', new File ('../FileObjectDir'), '/absolutePath' ]
@@ -153,8 +165,8 @@ class GnuMakeSpec extends spock.lang.Specification {
             
         expect:
         gnumake.cmdargs.size() == 2
-        gnumake.cmdargs.contains( 'BUILD_NUMBER=1234' )
-        gnumake.cmdargs.contains( 'DESTDIR=/path/somewhere' )
+        gnumake.cmdargs.contains( "BUILD_NUMBER=12345${''}" )
+        gnumake.cmdargs.contains( "DESTDIR=/path/somewhere${''}" )
     }
     
     def "arbitrary switches are added at the end"() {

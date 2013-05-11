@@ -41,6 +41,10 @@ class GnuMake extends DefaultTask {
   
   @Input
   @Optional
+  String chDir
+  
+  @Input
+  @Optional
   String makefile
   
   @Input
@@ -89,10 +93,11 @@ class GnuMake extends DefaultTask {
           [ keepGoing,            '-k' ],
           [ jobs > 1,             '-j', jobs as String ],
           [ makefile,             '-f',"${makefile.toString()}" ],
+          [ chDir,                '-C',"${chDir.toString()}" ],
           
       ].collectMany { it.head() ? it.tail() : [] } + 
       
-          (includeDirs.size() ? includeDirs.collectMany { ['-I',"${it.toString()}"] } : []) +     
+          ( includeDirs.collectMany { ['-I',"${it.toString()}"] } ) +     
           targets +
           flags.collect { k,v -> "$k=$v" } +
           switches
