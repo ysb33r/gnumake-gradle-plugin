@@ -1,5 +1,6 @@
 package org.ysb33r.gradle.gnumake
 
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.Input
@@ -20,7 +21,7 @@ class GnuMake extends DefaultTask {
    */
   @Input
   @Optional
-  List<String> targets
+  List<String> targets = []
   
   @Input
   @Optional
@@ -60,7 +61,7 @@ class GnuMake extends DefaultTask {
 
   @Input
   @Optional
-  List<String> includeDirs
+  def includeDirs = []
   
   @Input
   @Optional
@@ -71,53 +72,37 @@ class GnuMake extends DefaultTask {
   boolean keepGoing = false
   
   ExecResult execResult
+  def cmdargs = []
+  
   
   GnuMake() {
     // Can make this assume certain defaults based upon the OS
     executable = executable ?: 'make'
   }
-
+  
+  void buildCmdArgs() {
+      cmdargs = [
+          
+          [ alwaysMake,           '-B' ],
+          [ environmentOverrides, '-e' ],
+          [ ignoreErrors,         '-i' ],
+          [ keepGoing,            '-k' ],
+          [ jobs > 1,             '-j', jobs as String ],
+          [ makefile,             '-f',"${makefile.toString()}" ],
+          
+      ].collectMany { it.head() ? it.tail() : [] } + 
+      
+          (includeDirs.size() ? includeDirs.collectMany { ['-I',"${it.toString()}"] } : []) +     
+          targets +
+          flags.collect { k,v -> "$k=$v" } +
+          switches
+  }
+    
   @TaskAction
   void exec() {
-      
-      List<String> cmdline
-      
-      if (makefile) {
-          cmdline+= ['-f',"'${makefile}'" ]
-      }
-      
-      if (alwaysMake) {
-          cmdline+= ['-B']
-      }
-      
-      if (environmentOverrides) {
-          cmdline+= ['-e']
-      }
-      
-      if (ignoreErrors) {
-          cmdline+= ['-i']
-      }
-       
-      includeDirs.each {
-          cmdline+= ['-I',"'${it}'"]
-      }
-  
-      if(jobs > 1) {
-        cmdline+= ['-j',"${jobs}"]
-      }
 
-      if (keepGoing) {
-          cmdline+= ['-k']
-      }
-
-      cmdline+= targets
-          
-      if(this.flags.size) {
-          cmdline+= flags.collect { k,v -> "'$k=$v'" }
-      }
-      
-      cmdline+= switches
-  
+      buildCmdArgs()
+              
       execResult = project.exec {
 
           executable = this.executable
@@ -126,8 +111,7 @@ class GnuMake extends DefaultTask {
               workingDir= this.workingDir
           }
           
-          args = cmdline
+          args = cmdargs
     }
   }
-  
 }

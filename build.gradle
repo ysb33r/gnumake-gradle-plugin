@@ -1,9 +1,15 @@
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
+    
+    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
 }
 
 task wrapper(type: Wrapper) {
