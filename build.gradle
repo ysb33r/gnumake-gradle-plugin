@@ -1,9 +1,42 @@
+// ============================================================================
+// (C) Copyright Schalk W. Cronje 2013
+//
+// This software is licensed under the Apache License 2.0
+// See http://www.apache.org/licenses/LICENSE-2.0 for license details
+// ============================================================================
+
+import groovyx.net.http.HTTPBuilder
+import static groovyx.net.http.ContentType.JSON
+import static groovyx.net.http.Method.GET
+import static groovyx.net.http.Method.POST
+
 apply plugin: 'eclipse'
 apply plugin: 'groovy'
+
+group = 'org.ysb33r.gradle'
+version = '0.0.1'
+def bintray_api_base_url = 'https://api.bintray.com'
+def bintray_repo = 'grysb33r'
+def bintray_package = 'gradle-plugins'
+//bintrayUserName = project.bintrayUserName?:"PLEASE SET bintrayUserName IN settings,gradle"
+//bintrayApiKey =   project.bintrayApiKey?:"PLEASE SET bintrayApiKey IN settings.gradle"
+
+buildscript {
+    repositories {
+        mavenRepo(url: 'http://repository.codehaus.org')
+        mavenCentral()
+        //mavenRepo(url: 'http://jcenter.bintray.com')
+    }
+    dependencies {
+        classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
+    }
+}
 
 repositories {
     mavenCentral()
 }
+
+
 
 dependencies {
     compile gradleApi()
@@ -11,6 +44,76 @@ dependencies {
     
     testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
 }
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+    //TODO: archives javadocJar
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'ysb33r gradle plugins', 'Implementation-Version': version
+    }
+}
+
+// FROM: https://github.com/bintray/bintray-examples/blob/master/gradle-example/build.gradle
+task createBintrayPackage << {
+    def http = new HTTPBuilder(bintray_api_base_url)
+    http.auth.basic bintrayUserName, bintrayApiKey
+    http.request(GET, JSON) {
+        uri.path = '/packages/' + bintrayUserName + '/' + bintray_repo + '/' + bintray_package
+        response.'404' = {
+            http = new HTTPBuilder(bintray_api_base_url)
+            http.auth.basic bintrayUserName, bintrayApiKey
+            http.request(POST, JSON) {
+                uri.path = '/packages/' + bintrayUserName + '/' + bintray_repo
+                body = [name: bintray_package, desc: 'auto', desc_url: 'auto', labels: ['gradle']]
+
+                response.success = { resp ->
+                    println 'Created!!!'
+                }
+            }
+        }
+    }
+}
+
+
+uploadArchives {
+    repositories {
+        
+/*        mavenDeployer {
+            repository(url: bintray_api_base_url + '/maven/' + bintrayUserName + '/' + bintray_repo + '/' + bintray_package ) {
+                authentication(userName: bintrayUserName, password: bintrayApiKey)
+            }
+            pom.version = version
+            pom.artifactId = 'vfs'
+        }
+*/     
+           
+        ivy {
+            
+            url bintray_api_base_url + '/content/' + bintrayUserName + '/' + bintray_repo + '/' + bintray_package + '/' + version
+            
+            credentials {
+                username bintrayUserName
+                password bintrayApiKey
+            }
+        }    
+
+    }
+}
+
+uploadArchives.dependsOn createBintrayPackage
+
+
+
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.6'
