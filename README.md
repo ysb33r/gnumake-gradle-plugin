@@ -7,9 +7,17 @@ GNU Make Gradle Plugin
 Provides a wrapper for calling GNU Make from Gradle. This is especially useful
 for projects migrating to Gradle or when constructing complex build systems of which
 some components utilise GNU make as it build tool. Most common command-line switches
-are supported, but for fullflexibiliy it is possible to add any additionak switch via 
+are supported, but for full flexibiliy it is possible to add any additional switch via 
 the *switches* property.
 
+Known compatibility:
+-------------------
+
+0.0.2 - Gradle 1.6
+
+
+Supported Properties
+--------------------
 The following properties are supported:
 
    + *alwaysMake* boolean, same as -B.
@@ -25,7 +33,9 @@ The following properties are supported:
    + *switches* list, arbitrary list of switches to pass to make. 
    + *executable* location of make executable, defaults to 'make'       
    + *workingDir* location where to start make from (not the same as *chDir*)
-   
+
+Synopsis
+--------   
 ```gradle
 buildscript { 
   repositories {
