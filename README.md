@@ -1,6 +1,5 @@
 
 
-
 GNU Make Gradle Plugin
 ======================
 
@@ -26,7 +25,7 @@ The following properties are supported:
    + *executable* location of make executable, defaults to 'make'       
    + *workingDir* location where to start make from (not the same as *chDir*)
    
-```gradle
+```groovy
 buildscript { 
   repositories {
     ivy {
