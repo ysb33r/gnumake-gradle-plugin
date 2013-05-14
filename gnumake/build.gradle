@@ -1,0 +1,85 @@
+// ============================================================================
+// (C) Copyright Schalk W. Cronje 2013
+//
+// This software is licensed under the Apache License 2.0
+// See http://www.apache.org/licenses/LICENSE-2.0 for license details
+// ============================================================================
+
+apply plugin: 'groovy'
+
+
+
+project.ext['bintrayPackage'] = 'gnumake-gradle-plugin'
+project.ext['bintrayRepo'] = 'grysb33r'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    
+    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+}
+
+//bintrayPackage
+
+    
+/*
+jar {
+    manifest {
+        attributes 'Implementation-Title': "${project.ext.bintray_package}", 'Implementation-Version': version
+    }
+}
+*/
+
+task createBintrayPackage( type : BintrayPackage ) 
+
+createBintrayPackage {
+    username    ( project.properties.bintrayUserName )
+    apiKey      ( project.properties.bintrayApiKey )
+    repository  ( project.bintrayRepo )
+    packageName ( project.bintrayPackage )
+    description ( '' )
+    descUrl     ( '' )
+    tags        ( ['gradle'] )
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+    //TODO: archives javadocJar
+}
+
+uploadArchives {
+    repositories {
+        
+/*        mavenDeployer {
+            repository(url: bintray_api_base_url + '/maven/' + bintrayUserName + '/' + bintray_repo + '/' + bintray_package ) {
+                authentication(userName: bintrayUserName, password: bintrayApiKey)
+            }
+            pom.version = version
+            pom.artifactId = '???'
+        }
+*/
+           
+        ivy {
+            
+            url createBintrayPackage.apiBaseUrl + '/content/' + project.properties.bintrayUserName + '/' + project.bintrayRepo + '/' + project.bintrayPackage + '/' + version
+            
+            credentials {
+                username project.properties.bintrayUserName
+                password project.properties.bintrayApiKey
+            }
+        }
+
+    }
+}
+
+uploadArchives.dependsOn createBintrayPackage
+

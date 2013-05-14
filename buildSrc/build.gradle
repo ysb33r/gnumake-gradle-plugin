@@ -5,23 +5,17 @@
 // See http://www.apache.org/licenses/LICENSE-2.0 for license details
 // ============================================================================
 
-buildscript {
-    repositories {
-        mavenRepo(url: 'http://repository.codehaus.org')
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
-    }
+
+repositories {
+    mavenRepo(url: 'http://repository.codehaus.org')
+    mavenCentral()
 }
 
-apply plugin: 'eclipse'
-apply plugin: 'groovy'
-apply plugin: 'maven'
+dependencies {
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
+}
 
 
-group = 'org.ysb33r.gradle'
-version = '0.0.2'
 
 
 
