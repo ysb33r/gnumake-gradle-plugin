@@ -5,13 +5,13 @@
 // See http://www.apache.org/licenses/LICENSE-2.0 for license details
 // ============================================================================
 import spock.lang.*
-import org.ysb33r.gradle.gnumake.GnuMake
+import org.ysb33r.gradle.gnumake.GnuMakeBuild
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
 class GnuMakeSpec extends spock.lang.Specification {
     def Project project = ProjectBuilder.builder().build()
-    def gnumake = project.task('gnumake', type: GnuMake )
+    def gnumake = project.task('gnumake', type: GnuMakeBuild )
     
     def "Newly created Task will set executable to OS-specific value"() {
         expect:
@@ -200,5 +200,22 @@ class GnuMakeSpec extends spock.lang.Specification {
         expect:
         gnumake.cmdargs.join(' ') == "-i clean DESTDIR=/path/somewhere -q -n"
     }
+    
+    def "Tasks are an alias for Targets, therefore writing tasks, should update targets"() {
+        given:
+        gnumake.tasks = [ 'build','install' ]
+        
+        expect:
+        gnumake.targets == [ 'build','install' ]
+    }
+    
+    def "Tasks are an alias for Targets, therefore writing targets, tasks should reflect"() {
+        given:
+        gnumake.targets = [ 'build','install' ]
+        
+        expect:
+        gnumake.tasks == [ 'build','install' ]
+    }
+ 
 }
 

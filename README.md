@@ -1,55 +1,17 @@
 
 
-GNU Make Gradle Plugin
+Various Gradle Plugins
 ======================
 
-Provides a wrapper for calling GNU Make from Gradle. This is especially useful
-for projects migrating to Gradle or when constructing complex build systems of which
-some components utilise GNU make as it build tool. Most common command-line switches
-are supported, but for full flexibiliy it is possible to add any additional switch via 
-the *switches* property.
+This project was born out of of having to do various things in Gradle for which support was not
+yet available. Typically this would have been where usage of Gradle was not mainstream or new
+technology that came along was not yet available in Gradle.
 
-Known compatibility:
--------------------
+Gnu Make Gradle Plugin
+----------------------
 
-0.0.2 - Gradle 1.6
+Allows GNU Make to be called from within a Gradle script - https://github.com/ysb33r/Gradle/tree/master/gnumake
 
 
-Supported Properties
---------------------
-The following properties are supported:
 
-   + *alwaysMake* boolean, same as -B.
-   + *environmentOverrides* boolean, same as -e
-   + *ignoreErrors* boolean, same as -i
-   + *keepGoing* boolean, same as -k
-   + *jobs*, integer, same as -j
-   + *makefile* same as -f
-   + *chDir* same as -C
-   + *includeDirs* list, same as -I
-   + *targets* list of targets to execute 
-   + *flags* map of variables to pass to make
-   + *switches* list, arbitrary list of switches to pass to make. 
-   + *executable* location of make executable, defaults to 'make'       
-   + *workingDir* location where to start make from (not the same as *chDir*)
 
-Synopsis
---------
-```groovy
-
-buildscript { 
-  repositories {
-    ivy {
-      url 'http://dl.bintray.com/ysb33r/grysb33r'
-    }
-  }
-  dependencies {
-    classpath 'org.ysb33r.gradle:gradle-plugins:0.0.2'
-  }
-}
-
-task runMake (type:org.ysb33r.gradle.gnumake.GnuMake) {
-  targets = ['build','install']
-  flags = [ DESTDIR : '/copy/files/here', BUILD_NUMBER : 12345 ]
-}
-```

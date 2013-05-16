@@ -18,9 +18,9 @@ import org.gradle.process.ExecResult
  * or when complex build need to construct components that use GNU Make as a
  * build tool.
  *
- * @author Schalk W. Cronjé
+ * @author Schalk W. Cronj������
  */
-class GnuMake extends DefaultTask {
+class GnuMakeBuild extends DefaultTask {
 
   /** List of targets to execute
    *
@@ -139,7 +139,7 @@ class GnuMake extends DefaultTask {
   /** Constructs the basic task class and sets executble path
    * if not already set.
    */
-  GnuMake() {
+  GnuMakeBuild() {
     // Can make this assume certain defaults based upon the OS
     executable = executable ?: 'make'
   }
@@ -184,4 +184,8 @@ class GnuMake extends DefaultTask {
           args = cmdargs
     }
   }
+  
+  void setTasks(def a) { targets=a }
+  
+  def getTasks() { targets }
 }
