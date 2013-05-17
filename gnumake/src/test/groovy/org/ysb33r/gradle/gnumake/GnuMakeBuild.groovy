@@ -217,5 +217,37 @@ class GnuMakeSpec extends spock.lang.Specification {
         gnumake.tasks == [ 'build','install' ]
     }
  
+    def "BuildFile is an alias for Makefile, therefore writing buildFile, should update makefile"() {
+        given:
+        gnumake.buildFile = 'GNUMakefile'
+        
+        expect:
+        gnumake.makefile == 'GNUMakefile'
+    }
+    
+    def "BuildFile are an alias for Makefile, therefore writing makefile, buildFile should reflect"() {
+        given:
+        gnumake.makefile = 'GNUMakefile'
+        
+        expect:
+        gnumake.buildFile == 'GNUMakefile'
+    }
+
+    def "Dir is an alias for chDir, therefore writing dir, should update chDir"() {
+        given:
+        gnumake.dir = '/path/to/somewhere'
+        
+        expect:
+        gnumake.chDir == '/path/to/somewhere'
+    }
+    
+    def "Dir is an alias for chDir, therefore writing chDir, dir should reflect"() {
+        given:
+        gnumake.chDir = '/path/to/somewhere'
+        
+        expect:
+        gnumake.dir == '/path/to/somewhere'
+    }
+
 }
 

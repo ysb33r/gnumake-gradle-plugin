@@ -18,7 +18,7 @@ import org.gradle.process.ExecResult
  * or when complex build need to construct components that use GNU Make as a
  * build tool.
  *
- * @author Schalk W. Cronj������
+ * @author Schalk W. Cronjé
  */
 class GnuMakeBuild extends DefaultTask {
 
@@ -185,7 +185,21 @@ class GnuMakeBuild extends DefaultTask {
     }
   }
   
-  void setTasks(def a) { targets=a }
-  
+  /** Provided convention compatibility with GradleBuild task.
+   * 'tasks' is an alias for 'targets'
+   */
+  void setTasks(def targets_ ) { targets=targets_ }
   def getTasks() { targets }
+  
+  /** Provided convention compatibility with GradleBuild task.
+   * 'dir' is an alias for 'chDir'
+   */
+  void setDir(def chDir_) { chDir=chDir_ }
+  def getDir() { chDir }
+  
+  /** Provided convention compatibility with GradleBuild task.
+   * 'buildFile' is an alias for 'makefile'
+   */
+  void setBuildFile(def makefile_ ) { makefile=makefile_ }
+  def getBuildFile() { makefile }
 }
