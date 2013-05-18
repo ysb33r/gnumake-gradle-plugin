@@ -20,10 +20,6 @@ dependencies {
     testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
 }
 
-//bintrayPackage    
-
-    
-
 jar {
     manifest {
         attributes 'Implementation-Title': moduleName, 'Implementation-Version': version
@@ -55,16 +51,7 @@ artifacts {
 
 uploadArchives  {
     repositories {
-        
-/*        mavenDeployer {
-            repository(url: bintray_api_base_url + '/maven/' + bintrayUserName + '/' + bintray_repo + '/' + bintray_package ) {
-                authentication(userName: bintrayUserName, password: bintrayApiKey)
-            }
-            pom.version = version
-            pom.artifactId = '???'
-        }
-*/
-           
+                   
         ivy {
             
             url createBintrayPackage.apiBaseUrl + '/content/' + project.properties.bintrayUserName + '/' + bintrayRepo + '/' + project.moduleName + '/' + version
@@ -79,18 +66,3 @@ uploadArchives  {
 }
 
 uploadArchives.dependsOn createBintrayPackage
-
-/*
-uploadArchves {
-    repositories {
-      bintray {
-        type : ivy
-        username : 'foo'
-        apiKey : 'fee'
-        repository : 'grysb33r'
-        packageName : 'gnumake-gradle-plugin'
-        baseUrl : .....        
-      }
-    }
-}
-*/
