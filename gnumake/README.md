@@ -17,8 +17,8 @@ Previous versions of this document
 Known compatibility
 -------------------
 
-0.0.3 - Gradle 1.6
-0.0.2 - Gradle 1.6
++ 0.0.3 - Gradle 1.6
++ 0.0.2 - Gradle 1.6
 
 
 Supported Properties

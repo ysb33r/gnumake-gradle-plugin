@@ -5,6 +5,8 @@
 // See http://www.apache.org/licenses/LICENSE-2.0 for license details
 // ============================================================================
 
+// package org.ysb33r.gradle.bintray
+
 import groovyx.net.http.HTTPBuilder
 import static groovyx.net.http.ContentType.JSON
 import static groovyx.net.http.Method.GET

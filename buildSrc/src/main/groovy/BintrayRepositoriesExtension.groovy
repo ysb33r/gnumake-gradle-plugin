@@ -14,6 +14,9 @@
  * 
  */
 
+ // package org.ysb33r.gradle.bintray
+ 
+import org.gradle.api.Project
 import org.gradle.api.Action
 import org.gradle.api.InvalidUserDataException
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -36,7 +39,7 @@ class BintrayRepositoriesExtension {
         this.repositories = repositories
     }
 
-    MavenArtifactRepository jcenter() {
+    MavenArtifactRepository jCenter() {
         return repositories.maven { MavenArtifactRepository repository ->
             repository.name = 'BintrayJCenter'
             repository.url = 'http://jcenter.bintray.com'
