@@ -8,10 +8,11 @@
 
 allprojects {
     group = 'org.ysb33r.gradle'
-    version = '0.0.3'
+    version = '0.0.4'
 
     ext {
         bintrayRepo = 'grysb33r'
+        bintrayUser = 'ysb33r'
     }
 }
 
