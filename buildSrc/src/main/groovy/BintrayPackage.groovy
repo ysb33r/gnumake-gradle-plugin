@@ -55,7 +55,7 @@ class BintrayPackage extends DefaultTask {
      */
     @Input
     @Optional
-    String repoUser
+    String repoOwner
     
     /** Package name where artefacts will be published to.
      * 
@@ -86,7 +86,7 @@ class BintrayPackage extends DefaultTask {
     
     @TaskAction
     def createPackage() {
-        def repoPath = '/packages/' + (repoUser ?: username) + '/' + repository
+        def repoPath = '/packages/' + (repoOwner ?: username) + '/' + repository
         def http = new HTTPBuilder(apiBaseUrl)
         http.auth.basic username, apiKey
         http.request(GET, JSON) {

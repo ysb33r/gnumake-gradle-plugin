@@ -40,7 +40,7 @@ task createBintrayPackage( type : BintrayPackage )
 createBintrayPackage  {
     username    ( project.properties.bintrayUserName )
     apiKey      ( project.properties.bintrayApiKey )
-    repoUser    ( bintrayUser )
+    repoOwner   ( bintrayUser )
     repoName    ( bintrayRepo )
     packageName ( moduleName )
     description ( '' )
