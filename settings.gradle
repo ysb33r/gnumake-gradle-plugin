@@ -12,4 +12,5 @@
 
 rootProject.name = 'gradle-plugins'
 
+include 'bintray'
 include 'gnumake'
