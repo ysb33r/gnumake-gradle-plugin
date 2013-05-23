@@ -1,13 +1,10 @@
 
 
-GNU Make Gradle Plugin
+Bintray Gradle Plugin
 ======================
 
-Provides a wrapper for calling GNU Make from Gradle. This is especially useful
-for projects migrating to Gradle or when constructing complex build systems of which
-some components utilise GNU make as it build tool. Most common command-line switches
-are supported, but for full flexibiliy it is possible to add any additional switch via 
-the *switches* property.
+A plugin to assist with working with Bintray. On the publishing side side it 
+currently provides a task for creating the metadata required.
 
 Previous versions of this document
 ----------------------------------
@@ -20,10 +17,12 @@ Known compatibility
 + 0.0.6 - Gradle 1.6
 
 Synopsis
---------
+========
+
+Adding the plugin
+-----------------
+
 ```groovy
-
-
 buildscript {
     repositories {
         mavenCentral()
@@ -36,8 +35,27 @@ buildscript {
         classpath 'org.ysb33r.gradle:bintray:0.0.6'
       }
 }
+```
 
-import org.ysb33r.gradle.gnumake.GnuMakeBuild
+Adding Bintray repositories
+---------------------------
+```groovy
+repositories {
+
+	// Adding JCenter
+	jCenter()
+	
+	// Adding arbitrary Bintray Ivy-style repository
+	ivyBintray( 'repoOwner', 'repoName' )
+	ivyBintray ('ysb33r','grysb33r')
+}
+```
+
+Publising to Bintray
+--------------------
+
+```groovy
+import org.ysb33r.gradle.bintray.BintrayPackage
 
 createBintrayPackage  {
     username    ( project.properties.bintrayUserName )
