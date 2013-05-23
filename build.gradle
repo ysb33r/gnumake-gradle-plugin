@@ -18,10 +18,25 @@ buildscript {
       }
 }
 */
-    
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenRepo(url: 'http://repository.codehaus.org')
+        ivy {
+          url 'http://dl.bintray.com/ysb33r/grysb33r'
+        }
+      }
+      dependencies {
+        classpath 'org.ysb33r.gradle:bintray:0.0.5'
+      }
+}
+
 allprojects {
+
     group = 'org.ysb33r.gradle'
-    version = '0.0.5'
+    version = '0.0.6'
 
     ext {
         bintrayRepo = 'grysb33r'

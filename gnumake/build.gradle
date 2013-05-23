@@ -10,10 +10,11 @@
 //
 // ============================================================================
 
+
+
 apply plugin: 'groovy'
 
-//import org.ysb33r.gradle.bintray.BintrayPackage
-import buildSrc.BintrayPackage
+import org.ysb33r.gradle.bintray.BintrayPackage
 
 ext.moduleName = 'gnumake-gradle-plugin'
 
@@ -46,7 +47,7 @@ createBintrayPackage  {
     packageName ( moduleName )
     description ( '' )
     descUrl     ( '' )
-    tags        ( ['gradle'] )
+    tags        ( ['gradle','gnumake','gmake'] )
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

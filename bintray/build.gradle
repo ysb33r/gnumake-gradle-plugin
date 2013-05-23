@@ -12,7 +12,7 @@
 
 apply plugin: 'groovy'
 
-//import org.ysb33r.gradle.bintray.BintrayPackage
+import org.ysb33r.gradle.bintray.BintrayPackage
 
 
 ext.moduleName = 'bintray-gradle-plugin'
@@ -23,8 +23,7 @@ repositories {
 }
 
 
-dependencies {
-}
+
 
 dependencies {
     compile gradleApi()
@@ -41,7 +40,7 @@ jar {
 }
 
 
-task createBintrayPackage( type : buildSrc.BintrayPackage ) 
+task createBintrayPackage( type : BintrayPackage ) 
 
 createBintrayPackage  {
     username    ( project.properties.bintrayUserName )
@@ -51,7 +50,7 @@ createBintrayPackage  {
     packageName ( moduleName )
     description ( '' )
     descUrl     ( '' )
-    tags        ( ['gradle'] )
+    tags        ( ['gradle','bintray'] )
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
