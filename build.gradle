@@ -6,9 +6,22 @@
 // ============================================================================
 
 
+/*
+buildscript {
+    repositories {
+        ivy {
+          url 'http://dl.bintray.com/ysb33r/grysb33r'
+        }
+      }
+      dependencies {
+        classpath 'org.ysb33r.gradle:bintray:0.0.5'
+      }
+}
+*/
+    
 allprojects {
     group = 'org.ysb33r.gradle'
-    version = '0.0.4'
+    version = '0.0.5'
 
     ext {
         bintrayRepo = 'grysb33r'

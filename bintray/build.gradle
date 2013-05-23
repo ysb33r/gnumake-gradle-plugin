@@ -12,18 +12,25 @@
 
 apply plugin: 'groovy'
 
-import org.ysb33r.gradle.bintray.BintrayPackage
+//import org.ysb33r.gradle.bintray.BintrayPackage
+
 
 ext.moduleName = 'bintray-gradle-plugin'
 
 repositories {
+    mavenRepo(url: 'http://repository.codehaus.org')
     mavenCentral()
+}
+
+
+dependencies {
 }
 
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
+
     testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
 }
 
@@ -34,7 +41,7 @@ jar {
 }
 
 
-task createBintrayPackage( type : BintrayPackage ) 
+task createBintrayPackage( type : buildSrc.BintrayPackage ) 
 
 createBintrayPackage  {
     username    ( project.properties.bintrayUserName )

@@ -86,7 +86,7 @@ class BintrayPackage extends DefaultTask {
     
     @TaskAction
     def createPackage() {
-        def repoPath = '/packages/' + (repoOwner ?: username) + '/' + repository
+        def repoPath = '/packages/' + (repoOwner ?: username) + '/' + repoName
         def http = new HTTPBuilder(apiBaseUrl)
         http.auth.basic username, apiKey
         http.request(GET, JSON) {

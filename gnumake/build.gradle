@@ -12,11 +12,13 @@
 
 apply plugin: 'groovy'
 
-import org.ysb33r.gradle.bintray.BintrayPackage
+//import org.ysb33r.gradle.bintray.BintrayPackage
+import buildSrc.BintrayPackage
 
 ext.moduleName = 'gnumake-gradle-plugin'
 
 repositories {
+    mavenRepo(url: 'http://repository.codehaus.org')
     mavenCentral()
 }
 
