@@ -98,3 +98,9 @@ uploadArchives  {
 
 uploadArchives.dependsOn createBintrayPackage
 ```
+
+Publishing to Bintray using new PublishingExtension
+---------------------------------------------------
+
+```groovy
+```
