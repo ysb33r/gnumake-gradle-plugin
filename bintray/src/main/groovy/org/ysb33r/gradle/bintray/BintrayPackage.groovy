@@ -84,9 +84,21 @@ class BintrayPackage extends DefaultTask {
     @Optional
     def tags = []
     
+    def getSource() {
+        repoOwner ?: username
+    }
+    
+    def mavenUrl(def moduleName) {
+        "${apiBaseUrl}/maven/${source}/${repoName}/${moduleName}"
+    }
+    
+    def ivyUrl(def moduleName,def moduleVersion) {
+        "${apiBaseUrl}/content/${source}/${repoName}/${moduleName}/${moduleVersion}"
+    }
+    
     @TaskAction
     def createPackage() {
-        def repoPath = '/packages/' + (repoOwner ?: username) + '/' + repoName
+        def repoPath = '/packages/' + source + '/' + repoName
         def http = new HTTPBuilder(apiBaseUrl)
         http.auth.basic username, apiKey
         http.request(GET, JSON) {

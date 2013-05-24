@@ -11,6 +11,7 @@
 // ============================================================================
 
 apply plugin: 'groovy'
+apply plugin: 'maven'
 
 import org.ysb33r.gradle.bintray.BintrayPackage
 
@@ -65,16 +66,12 @@ artifacts {
 
 uploadArchives  {
     repositories {
-                   
-        ivy {
-            
-            url createBintrayPackage.apiBaseUrl + '/content/' + project.properties.bintrayUserName + '/' + bintrayRepo + '/' + project.moduleName + '/' + version
-            
-            credentials {
-                username project.properties.bintrayUserName
-                password project.properties.bintrayApiKey
+      
+        mavenDeployer {
+            repository(url: createBintrayPackage.apiBaseUrl + '/maven/' + bintrayUser + '/' + bintrayRepo + '/' + project.moduleName) {
+              authentication(userName: project.properties.bintrayUserName, password: project.properties.bintrayApiKey)
             }
-        }
+          }
 
     }
 }

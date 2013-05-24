@@ -36,7 +36,7 @@ buildscript {
 allprojects {
 
     group = 'org.ysb33r.gradle'
-    version = '0.0.6'
+    version = '0.0.7'
 
     ext {
         bintrayRepo = 'grysb33r'

@@ -40,6 +40,9 @@ buildscript {
 Adding Bintray repositories
 ---------------------------
 ```groovy
+
+apply plugin: 'bintray'
+
 repositories {
 
 	// Adding JCenter
@@ -70,17 +73,26 @@ createBintrayPackage  {
 
 uploadArchives  {
     repositories {
-                   
+ 
+        // Publishing as ivy              
         ivy {
             
-            url createBintrayPackage.apiBaseUrl + '/content/' + project.properties.bintrayUserName + '/' + bintrayRepo + '/' + project.moduleName + '/' + version
+            url createBintrayPackage.ivyUrl (project.moduleName,version)
             
             credentials {
-                username project.properties.bintrayUserName
-                password project.properties.bintrayApiKey
+                username createBintrayPackage.username
+                password createBintrayPackage.apiKey
             }
         }
 
+		// Publishing as maven
+		mavenDeployer {
+		
+            repository ( url: createBintrayPackage.mavenUrl(project.moduleName) ) {
+              authentication(userName: createBintrayPackage.username, password: createBintrayPackage.apiKey)
+            }
+            
+        }
     }
 }
 
