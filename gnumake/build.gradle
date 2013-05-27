@@ -63,30 +63,11 @@ uploadArchives  {
     repositories {
             
         mavenDeployer {
-            repository(url: createBintrayPackage.apiBaseUrl + '/maven/' + bintrayUser + '/' + bintrayRepo + '/' + project.moduleName) {
-              authentication(userName: project.properties.bintrayUserName, password: project.properties.bintrayApiKey)
+            repository(url: createBintrayPackage.mavenUrl(project.moduleName) ) {
+              authentication(userName: createBintrayPackage.username, password: createBintrayPackage.apiKey )
             }
           }
     }
 }
 
 uploadArchives.dependsOn createBintrayPackage
-
-/*
-publishing {
-    publications {
-    mavenJava(MavenPublication) {
-    from components.java
-    }
-    }
-    repositories {
-    maven {
-    url 'https://api.bintray.com/maven/ysb33r/grysb33r/${moduleName}'
-    credentials {
-    username = bintray_username
-    password = bintray_api_key
-    }
-    }
-    }
-    }
-*/

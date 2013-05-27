@@ -12,14 +12,13 @@
 
 package org.ysb33r.gradle.bintray
 
-// http://mrhaki.blogspot.co.uk/2010/09/gradle-goodness-define-short-plugin-id.html
-// https://github.com/Ullink/gradle-repositories-plugin/blob/master/src/main/groovy/com/ullink/RepositoriesPlugin.groovy
 import org.gradle.api.*
 import org.apache.ivy.plugins.resolver.DependencyResolver
 
 class BintrayPlugin implements Plugin<Project> {
     
-    static final String BINTRAY_DOWNLOAD_URL = 'http://dl.bintray.com';
+    static final String BINTRAY_DOWNLOAD_URL = 'http://dl.bintray.com'
+    static final String BINTRAY_JCENTER_URL = 'http://jcenter.bintray.com'
     
     void apply(Project project) {
         addJCenter(project)
@@ -30,6 +29,10 @@ class BintrayPlugin implements Plugin<Project> {
         "bintray:${repoOwner}:${repoName}"
     }
     
+    static def bintrayRepoUrl( def repoOwner, def repoName ) {
+        "${BINTRAY_DOWNLOAD_URL}/${repoOwner}/${repoName}"
+    }
+    
     /** Adds jCenter() to repositories {} 
      */
     static void addJCenter(Project project) {
@@ -37,7 +40,7 @@ class BintrayPlugin implements Plugin<Project> {
             project.logger.debug 'Adding jCenter() to project RepositoryHandler'
             
             project.repositories.metaClass.jCenter = { ->
-                project.repositories.mavenRepo( name : 'BintrayJCenter', url : 'http://jcenter.bintray.com' )
+                project.repositories.mavenRepo( name : 'bintrayJCenter', url : BINTRAY_JCENTER_URL )
             }
         }
     }
@@ -46,32 +49,31 @@ class BintrayPlugin implements Plugin<Project> {
      */
     static void addBintray(Project project) {
 
-        def extname = 'ivyBintray'
-        if (!project.repositories.metaClass.respondsTo(project.repositories, extname,String,String,Object)) {
-            project.logger.debug "Adding ${extname}(String,String,Closure?) to project RepositoryHandler"
+        final def ivyName = 'ivyBintray'
+        if (!project.repositories.metaClass.respondsTo(project.repositories, ivyName,String,String,Closure)) {
+            project.logger.debug "Adding ${ivyName}(String,String,Closure?) to project RepositoryHandler"
             
-            project.repositories.metaClass."${extname}" = { String repoOwner,String repoName ,Closure cfg=null -> 
+            project.repositories.metaClass."${ivyName}" = { String repoOwner,String repoName ,Closure cfg=null -> 
                 project.repositories.ivy {
                     name = bintrayRepoName(repoOwner,repoName)
-                    url = "${BINTRAY_DOWNLOAD_URL}/${repoOwner}/${repoName}"
+                    url = bintrayRepoUrl(repoOwner,repoName)
                     if(cfg) { cfg.call() }
                 }
                  
             }
-
+            
         }
         
-        extname = 'mavenBintray'
-        if (!project.repositories.metaClass.respondsTo(project.repositories, extname,String,String,Object)) {
-            project.logger.debug "Adding ${extname}(String,String,Closure?) to project RepositoryHandler"
+        final def mavenName = 'mavenBintray'
+        if (!project.repositories.metaClass.respondsTo(project.repositories, mavenName,String,String,Closure)) {
+            project.logger.debug "Adding ${mavenName}(String,String,Closure?) to project RepositoryHandler"
             
-            project.repositories.metaClass."${extname}" = { String repoOwner,String repoName ,Closure cfg=null -> 
+            project.repositories.metaClass."${mavenName}" = { String repoOwner,String repoName ,Closure cfg=null -> 
                 project.repositories.mavenRepo( 
                     name : bintrayRepoName(repoOwner,repoName),
-                    url : "${BINTRAY_DOWNLOAD_URL}/${repoOwner}/${repoName}",
+                    url : bintrayRepoUrl(repoOwner,repoName),
                     cfg
-                )
-                 
+                )   
             }
         }
     }

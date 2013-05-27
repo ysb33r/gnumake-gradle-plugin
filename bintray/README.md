@@ -99,8 +99,11 @@ uploadArchives  {
 uploadArchives.dependsOn createBintrayPackage
 ```
 
-Publishing to Bintray using new PublishingExtension
----------------------------------------------------
+Acknowledgements
+================
 
-```groovy
-```
+Writing this was not possible without the help of others. The following links were specifically helpful
+
+- http://mrhaki.blogspot.co.uk/2010/09/gradle-goodness-define-short-plugin-id.html
+- https://github.com/Ullink/gradle-repositories-plugin/blob/master/src/main/groovy/com/ullink/RepositoriesPlugin.groovy
+- https://github.com/bintray/bintray-examples/blob/master/gradle-example/build.gradle

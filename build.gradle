@@ -19,24 +19,24 @@ buildscript {
 }
 */
 
+apply plugin : 'eclipse'
+apply plugin : 'idea'
 
 buildscript {
     repositories {
         mavenCentral()
         mavenRepo(url: 'http://repository.codehaus.org')
-        ivy {
-          url 'http://dl.bintray.com/ysb33r/grysb33r'
-        }
+        mavenRepo(url: 'http://dl.bintray.com/ysb33r/grysb33r')
       }
       dependencies {
-        classpath 'org.ysb33r.gradle:bintray:0.0.5'
+        classpath 'org.ysb33r.gradle:bintray:0.0.7'
       }
 }
 
 allprojects {
 
     group = 'org.ysb33r.gradle'
-    version = '0.0.7'
+    version = '0.0.8'
 
     ext {
         bintrayRepo = 'grysb33r'

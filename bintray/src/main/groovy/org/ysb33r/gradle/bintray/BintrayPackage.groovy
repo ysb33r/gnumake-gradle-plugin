@@ -88,12 +88,12 @@ class BintrayPackage extends DefaultTask {
         repoOwner ?: username
     }
     
-    def mavenUrl(def moduleName) {
-        "${apiBaseUrl}/maven/${source}/${repoName}/${moduleName}"
+    def mavenUrl(def moduleName = null) {
+        "${apiBaseUrl}/maven/${source}/${repoName}/${moduleName?:packageName}"
     }
     
-    def ivyUrl(def moduleName,def moduleVersion) {
-        "${apiBaseUrl}/content/${source}/${repoName}/${moduleName}/${moduleVersion}"
+    def ivyUrl(def moduleName=null,def moduleVersion) {
+        "${apiBaseUrl}/content/${source}/${repoName}/${moduleName?:packageName}/${moduleVersion}"
     }
     
     @TaskAction
