@@ -42,21 +42,23 @@ import org.gradle.api.*
 class BintrayPublishPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        //Task createBintrayMetadata = addBintrayPackageTask (project)
-        //addMavenDeployer (project, createBintrayMetadata) 
-        //addIvyDeployer project 
-    }
- /*   
-    static Task addBintrayPackageTask =  { Project project ->
-        project.tasks.createBintrayMetadata ?: (
-            project.task ( type : BintrayPackage , "createBintrayMetadata" )
-        )
+        Task createBintrayMetadata = addBintrayPackageTask (project)
+        addMavenDeployer (project, createBintrayMetadata) 
+        //TODO: addIvyDeployer project 
     }
     
+    static Task addBintrayPackageTask (Project project ) {
+        def chkTask= project.getTasksByName('createBintrayMetadata',false)
+        chkTask ? chkTask[0] : (
+            project.tasks.create ( name : "createBintrayMetadata", type : BintrayPackage   )
+        )
+    }
+   
     static void addMavenDeployer(Project project,Task createBintrayMetadata ) {
         if (!project.repositories.metaClass.respondsTo(project.repositories, 'bintrayMavenDeployer',Closure)) {
             project.logger.debug 'Adding bintrayMavenDeployer{} to project RepositoryHandler'
             
+            // BUG: This is not correct. Somehow I need to book into uploadArchives.repositories
             project.repositories.metaClass.bintrayMavenDeployer = { final Closure c->
                 
                 Closure config = c.clone()
@@ -69,5 +71,4 @@ class BintrayPublishPlugin implements Plugin<Project> {
             }
         }
     }
-    */
 }
