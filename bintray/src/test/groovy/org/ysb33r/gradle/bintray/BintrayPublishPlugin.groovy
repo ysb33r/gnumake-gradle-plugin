@@ -7,18 +7,8 @@ import org.gradle.testfixtures.ProjectBuilder
 
 class BintrayPublishPluginSpec extends Specification {
             
-    def "Plugin should create a task called 'createBintrayMetdata'" () {
-        given:
-            def Project project = ProjectBuilder.builder().build()
-            project.apply plugin : 'bintray-publish'
-        
-        expect:
-            project.tasks.createBintrayMetadata != null
-            project.tasks.'createBintrayMetadata' instanceof BintrayPackage
-        
-    }
     
-    def "uploadArchives must support 'bintrayMavenDeployer' under repositories"() {
+    def "Upload Task must support 'bintrayMavenDeployer' under repositories"() {
         given:
             def Project project = ProjectBuilder.builder().build()
             project.apply plugin : 'bintray-publish'
@@ -27,19 +17,23 @@ class BintrayPublishPluginSpec extends Specification {
             project.uploadArchives {
                 repositories {
                     bintrayMavenDeployer {
-                        username  'someUser'
-                        password  'some_bintray_api_key_not_valid'
-                        repoOwner 'someOwner'
-                        repoName  'someRepo'
-                        'package' 'somePackage'
+                        username    'someUser'
+                        apiKey      'some_bintray_api_key_not_valid'
+                        repoOwner   'someOwner'
+                        repoName    'someRepo'
+                        packageName 'somePackage'
                         description 'This is a unittest for bintray maven publishing'
-                        descUrl = 'http://somesite.example'
-                        tags = ['gradle','bintray','spock']
+                        descUrl     'http://somesite.example'
+                       // tags        ['gradle','bintray','spock']
                     }
                 }
             }
+   println project.uploadArchives.repositories         
             
         expect:
-            project.uploadArchives instanceof boolean
+            project.tasks.bintrayMetadata_uploadArchives != null
+            project.tasks.bintrayMetadata_uploadArchives.username == 'someUser'
+            project.tasks.bintrayMetadata_uploadArchives.apiKey == 'some_bintray_api_key_not_valid'
+            project.uploadArchives.repositories.size() == 1
     }
 }
