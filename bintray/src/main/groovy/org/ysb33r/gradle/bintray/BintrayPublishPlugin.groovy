@@ -43,17 +43,28 @@ class BintrayPublishPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         addMavenDeployer (project) 
-        //TODO: addIvyDeployer project 
+        addIvyDeployer project 
+        // TODO: addMavenPublisher project
+        // TODO: addIvyPublisher project
     }
     
-    static def addBintrayPackageTask (Project project,String taskName  ) {
-                    // TODO: What if the task already exists    
-        def chkTask= project.getTasksByName(taskName,false)
-        chkTask ? chkTask[0] : (
-            project.tasks.create ( name : "${taskName}", type : BintrayPackage   )
-        )
-        project.logger.debug "Added task ${taskName}"
-        project.tasks."${taskName}"
+    static def addBintrayPackageTask (Project project,final String initialTaskName  ) {
+                    // TODO: What if the task already exists   
+        int index=0 
+        String taskName=initialTaskName
+        
+        while(true) {
+            def chkTask= project.getTasksByName(taskName,false)
+        
+            if (chkTask) {
+                ++index
+                taskName = "${initialTaskName}_${index}"    
+            } else {
+                project.tasks.create ( name : "${taskName}", type : BintrayPackage   )
+                project.logger.debug "Added task ${taskName}"
+                return project.tasks."${taskName}"
+            }
+        }         
     }
    
     static void addMavenDeployer(Project project ) {
@@ -65,7 +76,6 @@ class BintrayPublishPlugin implements Plugin<Project> {
                     project.apply plugin : 'maven'
                     
                     def bintrayMetadata = addBintrayPackageTask(project,"bintrayMetadata_${uploadTask.name}")
-                    //project.tasks.create ( name : "bintrayMetadataFor${uploadTask.name}", type : BintrayPackage)
 
                     Closure config = c.clone()
                     config.delegate = bintrayMetadata
@@ -86,4 +96,47 @@ class BintrayPublishPlugin implements Plugin<Project> {
             }
         }
     }
+    
+    static void addIvyDeployer(Project project ) {
+        if (!project.repositories.metaClass.respondsTo(project.repositories, 'bintrayIvyDeployer',Closure)) {
+           
+            project.tasks.withType( Upload.class ).all { uploadTask ->
+                uploadTask.repositories.metaClass.bintrayIvyDeployer << { final Closure c ->
+                    
+                    def bintrayMetadata = addBintrayPackageTask(project,"bintrayMetadata_${uploadTask.name}")
+
+                    Closure config = c.clone()
+                    config.delegate = bintrayMetadata
+                    config()
+                    
+                    uploadTask.dependsOn bintrayMetadata
+                  
+                    uploadTask.repositories {
+                        ivy {
+                            url bintrayMetadata.ivyUrl (project.version)
+                            
+                            credentials {
+                                username bintrayMetadata.username
+                                password bintrayMetadata.apiKey
+                            }                        }
+                    }
+                }
+                
+                project.logger.debug "Added bintrayIvyDeployer to Upload task ${uploadTask.name}"
+            }
+        }
+    }
+    
+    
+
+//    ivy {
+//        
+//        url createBintrayPackage.ivyUrl (project.moduleName,version)
+//        
+//        credentials {
+//            username createBintrayPackage.username
+//            password createBintrayPackage.apiKey
+//        }
+//    }
+
 }
