@@ -15,7 +15,7 @@ This is version 0.5 (development). Released version of 0.0.9.
 + 0.0.9 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_9/bintray/README.md
 + 0.0.7 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_7/bintray/README.md
 + 0.0.6 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_6/bintray/README.md
-+ 0.0.2 - https://github.com/ysb33r/Gradle/blob/0.0.2_RELEASE/README.md
+
 
 Known compatibility
 -------------------
