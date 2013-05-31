@@ -103,7 +103,7 @@ uploadArchives  {
 Publishing using new Gradle Plublishing mechanism
 =================================================
 
-This is not yet supported, but will be in a future versoin. Currently the publication feature is still in incubation in 1.6 and a number of changes
+This is not yet supported, but will be in a future version. Currently the publication feature is still in incubation in 1.6 and a number of changes
 are expected, so I am holding off for the moment.
 
 
