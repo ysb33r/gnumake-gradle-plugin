@@ -80,7 +80,7 @@ uploadArchives  {
          	repoName    'grysb33r'
          	packageName 'someNewPackageToBePublished'
             description 'This is an example to simplifying bintray publishing'
-            descUrl     'https://github.com/ysb33r/Gradle/blob/master/buildSrc/src/main/groovy/BintrayPackage.groovy'
+            descUrl     'https://github.com/ysb33r/Gradle/blob/master/bintray/README.md'
             tags        'gradle','bintray'
         }
        
@@ -92,7 +92,7 @@ uploadArchives  {
          	repoName    'grysb33r'
          	packageName 'someNewPackageToBePublished'
             description 'This is an example to simplifying bintray publishing'
-            descUrl     'https://github.com/ysb33r/Gradle/blob/master/buildSrc/src/main/groovy/BintrayPackage.groovy'
+            descUrl     'https://github.com/ysb33r/Gradle/blob/master/bintray/README.md'
             tags        'gradle','bintray'
        }
     }
