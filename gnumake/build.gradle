@@ -52,7 +52,7 @@ uploadArchives  {
             repoName    bintrayRepo
             packageName moduleName
             description 'This is a plugin for Gradle that allows invoking GNU Make builds'
-            //tags        'gradle','GNU','gmake','make','gnumake'
+            tags        'gradle','GNU','gmake','make','gnumake'
         }
     }
 }

@@ -54,7 +54,7 @@ uploadArchives  {
             repoName    bintrayRepo
             packageName moduleName
             description 'This is a bintray publish plugin for Gradle'
-            //tags        'gradle','bintray'
+            tags        'gradle','bintray'
         }
     }
 }
