@@ -24,7 +24,7 @@ class BintrayPublishPluginSpec extends Specification {
                         packageName 'somePackage'
                         description 'This is a unittest for bintray maven publishing'
                         descUrl     'http://somesite.example'
-                       // tags        ['gradle','bintray','spock']
+                        tags        'gradle','bintray','spock'
                     }
                 }
             }
@@ -52,7 +52,7 @@ class BintrayPublishPluginSpec extends Specification {
                         packageName 'somePackage'
                         description 'This is a unittest for bintray maven publishing'
                         descUrl     'http://somesite.example'
-                       // tags        ['gradle','bintray','spock']
+                       tags         'gradle','bintray','spock'
                     }
                 }
             }

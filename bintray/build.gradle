@@ -11,10 +11,7 @@
 // ============================================================================
 
 apply plugin: 'groovy'
-apply plugin: 'maven'
-
-import org.ysb33r.gradle.bintray.BintrayPackage
-
+apply plugin: 'bintray-publish'
 
 ext.moduleName = 'bintray-gradle-plugin'
 
@@ -22,9 +19,6 @@ repositories {
     mavenRepo(url: 'http://repository.codehaus.org')
     mavenCentral()
 }
-
-
-
 
 dependencies {
     compile gradleApi()
@@ -41,19 +35,6 @@ jar {
 }
 
 
-task createBintrayPackage( type : BintrayPackage ) 
-
-createBintrayPackage  {
-    username    ( project.properties.bintrayUserName )
-    apiKey      ( project.properties.bintrayApiKey )
-    repoOwner   ( bintrayUser )
-    repoName    ( bintrayRepo )
-    packageName ( moduleName )
-    description ( '' )
-    descUrl     ( '' )
-    tags        ( ['gradle','bintray'] )
-}
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -66,14 +47,15 @@ artifacts {
 
 uploadArchives  {
     repositories {
-      
-        mavenDeployer {
-            repository(url: createBintrayPackage.mavenUrl(project.moduleName) ) {
-              authentication(userName: createBintrayPackage.username, password: createBintrayPackage.apiKey )
-            }
-          }
-
+        bintrayMavenDeployer {
+            username    project.properties.bintrayUserName
+            apiKey      project.properties.bintrayApiKey
+            repoOwner   bintrayUser
+            repoName    bintrayRepo
+            packageName moduleName
+            description 'This is a bintray publish plugin for Gradle'
+            //tags        'gradle','bintray'
+        }
     }
 }
 
-uploadArchives.dependsOn createBintrayPackage

@@ -4,12 +4,17 @@ Bintray Gradle Plugin
 ======================
 
 A plugin to assist with working with Bintray. On the publishing side side it 
-currently provides a task for creating the metadata required.
+will publish to Bintray as either a Ivy or a Maven style repository. A separate
+task is also available for purely creating package metadata on Bintray.
 
 Previous versions of this document
 ----------------------------------
 
-0.0.2 - https://github.com/ysb33r/Gradle/blob/0.0.2_RELEASE/README.md
+This is version 0.0.9
+
++ 0.0.7 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_7/bintray/README.md
++ 0.0.6 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_6/bintray/README.md
++ 0.0.2 - https://github.com/ysb33r/Gradle/blob/0.0.2_RELEASE/README.md
 
 Known compatibility
 -------------------
@@ -27,12 +32,10 @@ buildscript {
     repositories {
         mavenCentral()
         mavenRepo(url: 'http://repository.codehaus.org')
-        ivy {
-          url 'http://dl.bintray.com/ysb33r/grysb33r'
-        }
+        mavenRepo(url: 'http://dl.bintray.com/ysb33r/grysb33r')
       }
       dependencies {
-        classpath 'org.ysb33r.gradle:bintray:0.0.6'
+        classpath 'org.ysb33r.gradle:bintray:0.0.9'
       }
 }
 ```
@@ -54,22 +57,16 @@ repositories {
 }
 ```
 
-Publising to Bintray
---------------------
+Publishing to Bintray
+---------------------
+
+The plugin hooks in the Upload task type. In the below example we
+configure the uploadArchives task which is created through the java 
+plugin to use Bintray.
 
 ```groovy
-import org.ysb33r.gradle.bintray.BintrayPackage
-
-createBintrayPackage  {
-    username    ( project.properties.bintrayUserName )
-    apiKey      ( project.properties.bintrayApiKey )
-    repoOwner   ( 'ysb33r' )
-    repoName    ( 'grysb33r' )
-    packageName ( 'gradle-bintray-plugin' )
-    description ( 'A plugin to help with publishing to bintray' )
-    descUrl     ( '' )
-    tags        ( ['gradle','bintray'] )
-}
+apply plugin : 'bintray-publish'
+apply plugin : 'java'
 
 uploadArchives  {
     repositories {
@@ -86,17 +83,19 @@ uploadArchives  {
         }
 
 		// Publishing as maven
-		mavenDeployer {
-		
-            repository ( url: createBintrayPackage.mavenUrl(project.moduleName) ) {
-              authentication(userName: createBintrayPackage.username, password: createBintrayPackage.apiKey)
-            }
-            
-        }
+		bintrayMavenDeployer {
+			username    'someBintrayUser'
+            apiKey      'SomeBinTrayUsersApiKey'
+         	repoOwner   'ysb33r'
+         	repoName    'grysb33r'
+         	packageName 'someNewPackageToBePublished'
+            description 'This is an example to simplifying bintray publishing'
+            descUrl     'https://github.com/ysb33r/Gradle/blob/master/buildSrc/src/main/groovy/BintrayPackage.groovy'
+            tags        'gradle','bintray'
+       }
     }
 }
 
-uploadArchives.dependsOn createBintrayPackage
 ```
 
 Acknowledgements

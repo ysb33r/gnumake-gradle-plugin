@@ -11,9 +11,7 @@
 // ============================================================================
 
 apply plugin: 'groovy'
-apply plugin: 'maven'
-
-import org.ysb33r.gradle.bintray.BintrayPackage
+apply plugin: 'bintray-publish'
 
 ext.moduleName = 'gnumake-gradle-plugin'
 
@@ -35,20 +33,6 @@ jar {
     }
 }
 
-
-task createBintrayPackage( type : BintrayPackage ) 
-
-createBintrayPackage  {
-    username    ( project.properties.bintrayUserName )
-    apiKey      ( project.properties.bintrayApiKey )
-    repoOwner   ( bintrayUser )
-    repoName    ( bintrayRepo )
-    packageName ( moduleName )
-    description ( '' )
-    descUrl     ( '' )
-    tags        ( ['gradle','gnumake','gmake'] )
-}
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -61,13 +45,14 @@ artifacts {
 
 uploadArchives  {
     repositories {
-            
-        mavenDeployer {
-            repository(url: createBintrayPackage.mavenUrl(project.moduleName) ) {
-              authentication(userName: createBintrayPackage.username, password: createBintrayPackage.apiKey )
-            }
-          }
+        bintrayMavenDeployer {
+            username    project.properties.bintrayUserName
+            apiKey      project.properties.bintrayApiKey
+            repoOwner   bintrayUser
+            repoName    bintrayRepo
+            packageName moduleName
+            description 'This is a plugin for Gradle that allows invoking GNU Make builds'
+            //tags        'gradle','GNU','gmake','make','gnumake'
+        }
     }
 }
-
-uploadArchives.dependsOn createBintrayPackage

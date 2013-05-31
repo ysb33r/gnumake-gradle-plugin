@@ -29,14 +29,14 @@ buildscript {
         mavenRepo(url: 'http://dl.bintray.com/ysb33r/grysb33r')
       }
       dependencies {
-        classpath 'org.ysb33r.gradle:bintray:0.0.7'
+        classpath 'org.ysb33r.gradle:bintray:0.0.8'
       }
 }
 
 allprojects {
 
     group = 'org.ysb33r.gradle'
-    version = '0.0.8'
+    version = '0.0.9'
 
     ext {
         bintrayRepo = 'grysb33r'

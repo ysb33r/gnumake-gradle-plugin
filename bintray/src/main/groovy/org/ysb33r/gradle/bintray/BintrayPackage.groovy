@@ -22,7 +22,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 
-// FROM: https://github.com/bintray/bintray-examples/blob/master/gradle-example/build.gradle
 class BintrayPackage extends DefaultTask {
     
     /** Bintray username
@@ -84,6 +83,10 @@ class BintrayPackage extends DefaultTask {
     @Optional
     def tags = []
     
+    def setTags (Object... t) {
+        tags = t as List    
+    }
+    
     def getSource() {
         repoOwner ?: username
     }
@@ -106,6 +109,9 @@ class BintrayPackage extends DefaultTask {
     
     @TaskAction
     def createPackage() {
+        // Credit for code goes to: 
+        //      https://github.com/bintray/bintray-examples/blob/master/gradle-example/build.gradle
+        
         def repoPath = '/packages/' + source + '/' + repoName
         def http = new HTTPBuilder(apiBaseUrl)
         http.auth.basic username, apiKey
