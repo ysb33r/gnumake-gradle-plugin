@@ -10,8 +10,9 @@ task is also available for purely creating package metadata on Bintray.
 Previous versions of this document
 ----------------------------------
 
-This is version 0.0.9
+This is version 0.5 (development). Released version of 0.0.9.
 
++ 0.0.9 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_9/bintray/README.md
 + 0.0.7 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_7/bintray/README.md
 + 0.0.6 - https://github.com/ysb33r/Gradle/blob/RELEASE_0_0_6/bintray/README.md
 + 0.0.2 - https://github.com/ysb33r/Gradle/blob/0.0.2_RELEASE/README.md
@@ -72,16 +73,17 @@ uploadArchives  {
     repositories {
  
         // Publishing as ivy              
-        ivy {
-            
-            url createBintrayPackage.ivyUrl (project.moduleName,version)
-            
-            credentials {
-                username createBintrayPackage.username
-                password createBintrayPackage.apiKey
-            }
+		bintrayIvyDeployer {
+			username    'someBintrayUser'
+            apiKey      'SomeBinTrayUsersApiKey'
+         	repoOwner   'ysb33r'
+         	repoName    'grysb33r'
+         	packageName 'someNewPackageToBePublished'
+            description 'This is an example to simplifying bintray publishing'
+            descUrl     'https://github.com/ysb33r/Gradle/blob/master/buildSrc/src/main/groovy/BintrayPackage.groovy'
+            tags        'gradle','bintray'
         }
-
+       
 		// Publishing as maven
 		bintrayMavenDeployer {
 			username    'someBintrayUser'
