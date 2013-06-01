@@ -10,8 +10,12 @@ technology that came along was not yet available in Gradle.
 Gnu Make Gradle Plugin
 ----------------------
 
-Allows GNU Make to be called from within a Gradle script - https://github.com/ysb33r/Gradle/tree/master/gnumake
+Allows GNU Make to be called from within a Gradle script - <a href="./gnumake">
 
 
+Bintray Gradle Plugin
+----------------------
+
+Allows publication to Bintray - <a href="./bintray">
 
 
