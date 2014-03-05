@@ -17,6 +17,7 @@ Previous versions of this document
 Known compatibility
 -------------------
 
++ 0.0.9 - Gradle 1.9
 + 0.0.3 - Gradle 1.6
 + 0.0.2 - Gradle 1.6
 
@@ -53,7 +54,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'org.ysb33r.gradle:gradle-gnumake-plugin:0.0.3'
+    classpath 'org.ysb33r.gradle:gnumake:0.0.9'
   }
 }
 
