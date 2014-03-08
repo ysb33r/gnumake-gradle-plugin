@@ -23,7 +23,7 @@ ext {
 
 repositories {
     mavenRepo(url: 'http://repository.codehaus.org')
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
