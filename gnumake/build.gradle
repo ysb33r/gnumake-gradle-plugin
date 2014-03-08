@@ -17,7 +17,7 @@ ext.moduleName = 'gnumake-gradle-plugin'
 version = 0.1
 
 repositories {
-    mavenRepo(url: 'http://repository.codehaus.org')
+//    mavenRepo(url: 'http://repository.codehaus.org')
     mavenCentral()
 }
 

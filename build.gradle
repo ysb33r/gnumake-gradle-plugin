@@ -4,7 +4,7 @@ buildscript {
         jcenter()
         mavenRepo(url: 'http://repository.codehaus.org')
         mavenRepo(url: 'http://dl.bintray.com/ysb33r/grysb33r')
-//        mavenLocal()
+        mavenLocal()
     }
     dependencies {
         classpath 'org.ysb33r.gradle:bintray:1.0'

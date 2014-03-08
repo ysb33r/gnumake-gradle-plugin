@@ -22,8 +22,9 @@ ext {
 }
 
 repositories {
-    mavenRepo(url: 'http://repository.codehaus.org')
+    //mavenRepo(url: 'http://repository.codehaus.org')
     jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -58,7 +59,7 @@ uploadArchives  {
         bintrayMavenDeployer {
             username    project.properties.bintrayUserName
             apiKey      project.properties.bintrayApiKey
-            repoOwner   bintrayUser
+            repoOwner   bintrayOwner
             repoName    bintrayRepo
             packageName moduleName
             description 'This is a bintray publish plugin for Gradle'
