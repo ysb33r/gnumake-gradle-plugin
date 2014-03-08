@@ -13,7 +13,13 @@
 apply plugin: 'groovy'
 apply plugin: 'bintray-publish'
 
-ext.moduleName = 'bintray-gradle-plugin'
+// Major part of version now track Bintray API version
+version = '1.0'
+group = 'org.ysb33r.gradle'
+
+ext {
+    moduleName = 'bintray-gradle-plugin'
+}
 
 repositories {
     mavenRepo(url: 'http://repository.codehaus.org')
@@ -26,11 +32,12 @@ dependencies {
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+    testCompile 'com.github.rest-driver:rest-client-driver:1.1.37'
 }
 
 jar {
     manifest {
-        attributes 'Implementation-Title': moduleName, 'Implementation-Version': version
+        attributes 'Implementation-Title': moduleName, 'Implementation-Version': project.version
     }
 }
 
@@ -47,6 +54,7 @@ artifacts {
 
 uploadArchives  {
     repositories {
+        mavenLocal()
         bintrayMavenDeployer {
             username    project.properties.bintrayUserName
             apiKey      project.properties.bintrayApiKey

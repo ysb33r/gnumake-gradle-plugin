@@ -4,3 +4,5 @@
 .settings
 build
 .DS_Store
+.idea
+*.iml

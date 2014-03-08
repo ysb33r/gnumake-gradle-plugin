@@ -109,28 +109,23 @@ class BintrayPackage extends DefaultTask {
     
     @TaskAction
     def createPackage() {
-        // Credit for code goes to: 
-        //      https://github.com/bintray/bintray-examples/blob/master/gradle-example/build.gradle
-        
-        def repoPath = '/packages/' + source + '/' + repoName
-        def http = new HTTPBuilder(apiBaseUrl)
-        http.auth.basic username, apiKey
-        http.request(GET, JSON) {
-            uri.path = repoPath + '/' + packageName
-            response.'404' = {
-                http = new HTTPBuilder(apiBaseUrl)
-                http.auth.basic username, apiKey
-                http.request(POST, JSON) {
-                    uri.path = repoPath
-                    body = [name: packageName, desc: description, desc_url: descUrl, labels: tags]
-    
-                    response.success = { resp ->
-                        println 'Created!!!'
-                    }
-                }
-            }
+        def bintray = new BintrayAPI(
+            'repoOwner'   : source,
+            'repoName'    : repoName,
+            'packageName' : packageName,
+            'version'     : project.version,
+            'userName'    : username,
+            'apiKey'      : apiKey,
+            'logger'      : project.logger
+        )
+
+        if(!bintray.hasVersion()) {
+            return bintray.createVersion()
+        } else {
+            return bintray.updateVersion();
         }
-    }
+   }
+
 }
 
 

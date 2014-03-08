@@ -1,5 +1,6 @@
 package org.ysb33r.gradle.bintray
 
+import groovy.mock.interceptor.Ignore
 import spock.lang.*
 
 import org.gradle.api.Project
@@ -99,6 +100,32 @@ class BintrayPublishPluginSpec extends Specification {
             project.tasks.bintrayMetadata_uploadArchives_1.apiKey == 'some_bintray_api_key_not_valid2'
 
     }
+
+//    def "New publishing extension must support mavenIvyDeployer"() {
+//        given:
+//            def Project project = ProjectBuilder.builder().build()
+//            project.apply plugin : 'ivy-publish'
+//            project.apply plugin : 'bintray-publish'
+//
+//            project.publishing {
+//                repositories {
+//                    bintrayIvyDeployer {
+//                        username    'someUser'
+//                        apiKey      'some_bintray_api_key_not_valid'
+//                        repoOwner   'someOwner'
+//                        repoName    'someRepo'
+//                        packageName 'somePackage'
+//                        description 'This is a unittest for bintray maven publishing'
+//                        descUrl     'http://somesite.example'
+//                       tags         'gradle','bintray','spock'
+//                    }
+//                }
+//            }
+//
+//       expect:
+//           project.publishing.repositories.size() == 1
+//    }
+    
     
 
 }

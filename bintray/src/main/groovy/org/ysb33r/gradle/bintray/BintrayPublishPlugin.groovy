@@ -45,11 +45,11 @@ class BintrayPublishPlugin implements Plugin<Project> {
         addMavenDeployer (project) 
         addIvyDeployer project 
         // TODO: addMavenPublisher project
-        // TODO: addIvyPublisher project
+        addIvyPublisher project
     }
     
     static def addBintrayPackageTask (Project project,final String initialTaskName  ) {
-                    // TODO: What if the task already exists   
+        // TODO: What if the task already exists
         int index=0 
         String taskName=initialTaskName
         
@@ -127,16 +127,84 @@ class BintrayPublishPlugin implements Plugin<Project> {
         }
     }
     
+    @Incubating
+    static void addIvyPublisher(Project project) {
     
+        Closure taskModification = { uploadTask ->
+            
+            uploadTask.repositories.metaClass.bintrayIvyDeployer << { final Closure c ->
 
-//    ivy {
-//        
-//        url createBintrayPackage.ivyUrl (project.moduleName,version)
-//        
-//        credentials {
-//            username createBintrayPackage.username
-//            password createBintrayPackage.apiKey
-//        }
+                def bintrayMetadata = addBintrayPackageTask(project,"bintrayMetadata_${uploadTask.name}")
+
+                Closure config = c.clone()
+                config.delegate = bintrayMetadata
+                config()
+
+                uploadTask.dependsOn bintrayMetadata
+
+                uploadTask.repositories {
+                    ivy {
+                        url bintrayMetadata.ivyUrl (project.version)
+
+                        credentials {
+                            username bintrayMetadata.username
+                            password bintrayMetadata.apiKey
+                        }
+                    }
+                }    
+                project.logger.debug "Added bintrayIvyDeployer to task ${uploadTask.name}"
+            }
+        }
+        
+        if( project.plugins.hasPlugin('ivy-publish') ) {
+            if (!project.publishing.repositories.metaClass.respondsTo(project.publishing.repositories, 'bintrayIvyDeployer',Closure)) {
+                project.tasks.withType( org.gradle.api.publish.ivy.tasks.PublishToIvyRepository.class ).all taskModification
+            }    
+        } else {
+            project.plugins.whenPluginAdded { plugin ->
+                if( project.plugins.hasPlugin('ivy-publish') ) {
+                    if (!project.publishing.repositories.metaClass.respondsTo(project.publishing.repositories, 'bintrayIvyDeployer',Closure)) {
+                        project.tasks.withType( org.gradle.api.publish.ivy.tasks.PublishToIvyRepository.class ).all taskModification
+                    }
+                }
+            }
+        }     
+    }
+        
+}        
+            
+//            project.apply plugin: 'ivy-publish'
+            
+//            project.tasks.withType( org.gradle.api.publish.ivy.tasks.PublishToIvyRepository.class ).all { uploadTask ->
+//                
+//              
+//                    uploadTask.repositories.metaClass.bintrayIvyDeployer << { final Closure c ->
+//                        
+//                        def bintrayMetadata = addBintrayPackageTask(project,"bintrayMetadata_${uploadTask.name}")
+//    
+//                        Closure config = c.clone()
+//                        config.delegate = bintrayMetadata
+//                        config()
+//                        
+//                        uploadTask.dependsOn bintrayMetadata
+//                      
+//                        uploadTask.repositories {
+//                            ivy {
+//                                url bintrayMetadata.ivyUrl (project.version)
+//                                
+//                                credentials {
+//                                    username bintrayMetadata.username
+//                                    password bintrayMetadata.apiKey
+//                                }                        
+//                        }
+//                    
+//                    project.logger.debug "Added bintrayIvyDeployer to Upload task ${uploadTask.name}"
+//                }
+//            
+//    
+//            }
+//        }    
 //    }
+//  }  
 
-}
+

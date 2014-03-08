@@ -1,53 +1,35 @@
-// ============================================================================
-// (C) Copyright Schalk W. Cronje 2013
-//
-// This software is licensed under the Apache License 2.0
-// See http://www.apache.org/licenses/LICENSE-2.0 for license details
-// ============================================================================
-
-
-/*
-buildscript {
-    repositories {
-        ivy {
-          url 'http://dl.bintray.com/ysb33r/grysb33r'
-        }
-      }
-      dependencies {
-        classpath 'org.ysb33r.gradle:bintray:0.0.5'
-      }
-}
-*/
-
-apply plugin : 'eclipse'
-apply plugin : 'idea'
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         mavenRepo(url: 'http://repository.codehaus.org')
         mavenRepo(url: 'http://dl.bintray.com/ysb33r/grysb33r')
-      }
-      dependencies {
-        classpath 'org.ysb33r.gradle:bintray:0.0.9'
-      }
-}
-
-allprojects {
-
-    group = 'org.ysb33r.gradle'
-    version = '0.5'
-
-    ext {
-        bintrayRepo = 'grysb33r'
-        bintrayUser = 'ysb33r'
+//        mavenLocal()
+    }
+    dependencies {
+        classpath 'org.ysb33r.gradle:bintray:1.0'
+        classpath 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.2'
     }
 }
 
+subprojects {
+    apply plugin : 'bintray-publish'
+    apply plugin : 'java'
 
+    sourceCompatibility = 1.6
 
+    version = '0.1'
 
+    ext {
+        bintrayOwner = 'ysb33r'
+        bintrayRepo = 'grysb33r'
+    }
 
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.11'
+        testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+    }
 
+}
 
 

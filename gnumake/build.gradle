@@ -14,6 +14,7 @@ apply plugin: 'groovy'
 apply plugin: 'bintray-publish'
 
 ext.moduleName = 'gnumake-gradle-plugin'
+version = 0.1
 
 repositories {
     mavenRepo(url: 'http://repository.codehaus.org')
@@ -48,7 +49,7 @@ uploadArchives  {
         bintrayMavenDeployer {
             username    project.properties.bintrayUserName
             apiKey      project.properties.bintrayApiKey
-            repoOwner   bintrayUser
+            repoOwner   bintrayOwner
             repoName    bintrayRepo
             packageName moduleName
             description 'This is a plugin for Gradle that allows invoking GNU Make builds'
