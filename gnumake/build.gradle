@@ -13,6 +13,8 @@
 apply plugin: 'groovy'
 apply plugin: 'bintray-publish'
 
+group = 'org.ysb33r.gradle'
+archivesBaseName = 'gnumake'
 ext.moduleName = 'gnumake-gradle-plugin'
 version = 0.1
 

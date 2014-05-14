@@ -54,7 +54,7 @@ buildscript {
 	jcenter()
   }  
   dependencies {
-    classpath 'org.ysb33r.gradle:gnumake:0.0.9'
+    classpath 'org.ysb33r.gradle:gnumake:0.1'
   }
 }
 
