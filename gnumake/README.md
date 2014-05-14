@@ -12,11 +12,13 @@ the *switches* property.
 Previous versions of this document
 ----------------------------------
 
+0.0.9 - https://github.com/ysb33r/Gradle/blob/0.0.9_RELEASE/README.md
 0.0.2 - https://github.com/ysb33r/Gradle/blob/0.0.2_RELEASE/README.md
 
 Known compatibility
 -------------------
 
++ 0.1 - Gradle 1.12
 + 0.0.9 - Gradle 1.9
 + 0.0.3 - Gradle 1.6
 + 0.0.2 - Gradle 1.6
@@ -49,10 +51,8 @@ import org.ysb33r.gradle.gnumake.GnuMakeBuild
 
 buildscript { 
   repositories {
-    ivy {
-      url 'http://dl.bintray.com/ysb33r/grysb33r'
-    }
-  }
+	jcenter()
+  }  
   dependencies {
     classpath 'org.ysb33r.gradle:gnumake:0.0.9'
   }
