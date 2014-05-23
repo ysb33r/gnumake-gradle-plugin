@@ -96,18 +96,24 @@ doxygen {
 }
 ```
 
-*NOTE*: Multiple items in a ```Doxyfile``` are space separated, but in the configuration script they are specified
+*NOTE 1*: Multiple items in a ```Doxyfile``` are space separated, but in the configuration script they are specified
 comma-separated, just like any other list. The plugin will take care of the translation and also to quote any items
 that may contain spaces,
 
-```Doxyfile``` properties which are treated differently are:
+*NOTE 2*: Any property that is boolean should be set using ```true``` or ```false```.
 
-* ```INPUT``` - Use ```source``` and ```sourceDir``` instead.
+
+Certain ```Doxyfile``` properties which are treated differently:
+
+* ```DOT_PATH``` - Use ```executables``` closure instead
+* ```HHC_LOCATION``` - Use ```executables``` closure instead
 * ```IMAGE_PATHS``` - Use ```image_paths``` instead and the plugin will take care of ensuring files and directories are
 part of the dependencies of the task
+* ```INPUT``` - Use ```source``` and ```sourceDir``` instead.
+* ```MSCGEN_PATH``` - Use ```executables``` closure instead
+* ```PERL_PATH``` - Use ```executables``` closure instead
+* ```PROJECT_NAME``` - ```project.name``` will be used as the default value. If you want to override use ```project_name```
 * ```PROJECT_NUMBER``` - ```project.version``` will be used as the default value. If you want to override use 
 ```project_number```
-* ```PROJECT_NAME``` - ```project.name``` will be used as the default value. If you want to override use ```project_name```
-* Any property that is boolean should be set using ```true``` or ```false```.
 
 

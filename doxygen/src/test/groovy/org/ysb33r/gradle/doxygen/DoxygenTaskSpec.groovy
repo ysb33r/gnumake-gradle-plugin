@@ -22,6 +22,7 @@ class DoxygenTaskSpec extends spock.lang.Specification {
     static final Boolean DO_NOT_RUN_DOXYGEN_EXE_TESTS = System.getProperty('DO_NOT_RUN_DOXYGEN_EXE_TESTS')
     static final File TESTFSREADROOT = new File( System.getProperty('TESTFSREADROOT') ?: 'src/test/resources' )
     static final File TESTFSWRITEROOT = new File( System.getProperty('TESTFSWRITEROOT') ?: 'build/tmp/test' )
+    static final File DOXY_TEMPLATE = new File ( System.getProperty('DOXY_TEMPLATE') ?: 'src/main/resources/doxyfile-template.dox')
 
     Project project = ProjectBuilder.builder().withProjectDir(TESTFSREADROOT).build()
     def dox = project.task('doxygen', type: Doxygen )
@@ -61,6 +62,43 @@ class DoxygenTaskSpec extends spock.lang.Specification {
         when:
             dox.configure {
                 input '/this/path'
+            }
+
+        then:
+            thrown(DoxygenException)
+    }
+
+    def "Using 'mscgen_path' should throw an exception"() {
+        when:
+            dox.configure {
+                mscgen_path '/this/path'
+            }
+
+        then:
+            thrown(DoxygenException)
+    }
+
+    def "Must be able to set executable paths via executables closure"() {
+        given:
+            dox.configure {
+                executables {
+                    doxygen '/path/to/doxygen'
+                    mscgen  '/path/to/mscgen'
+                }
+            }
+
+        expect:
+            dox.executables.doxygen == '/path/to/doxygen'
+            dox.executables.mscgen  == '/path/to/mscgen'
+
+    }
+
+    def "Only supported executables must be configurable"() {
+        when:
+            dox.configure {
+                executables {
+                    foobar '/path/to/foo'
+                }
             }
 
         then:
@@ -134,7 +172,11 @@ class DoxygenTaskSpec extends spock.lang.Specification {
                 generate_xml   false
                 generate_latex false
                 generate_html  true
+                have_dot       false
 
+                executables {
+                    dot 'path/to/dot'
+                }
             }
 
             dox.exec()
@@ -142,12 +184,60 @@ class DoxygenTaskSpec extends spock.lang.Specification {
         expect:
             new File(TESTFSWRITEROOT,'docs/html').exists()
             new File(TESTFSWRITEROOT,'docs/html/index.html').exists()
+            dox.doxygenProperties['DOT_PATH'] == new File('path/to/dot').absolutePath
     }
 
+    def "Setting image_path should also update the input files (not source files)"() {
+        given:
+            dox.configure {
+                source new File(TESTFSREADROOT,'sample-cpp')
+                outputDir new File(TESTFSWRITEROOT,'docs')
+                image_path new File(TESTFSREADROOT,'non-existing1')
+                image_path new File(TESTFSREADROOT,'non-existing2')
+            }
+
+            dox.setDefaults()
+
+        expect:
+            dox.inputs.files.contains(new File(TESTFSREADROOT,'non-existing1'))
+            dox.inputs.files.contains(new File(TESTFSREADROOT,'non-existing2'))
+            dox.doxygenProperties['IMAGE_PATH'] == new File(TESTFSREADROOT,'non-existing1').absolutePath + ' ' + new File(TESTFSREADROOT,'non-existing2').absolutePath
+
+    }
+
+    def "When custom template is supplied, expect template to be copied and then modified"() {
+        given:
+            Project proj = ProjectBuilder.builder().withName('DoxygenTaskSpec').build()
+            proj.buildDir = TESTFSWRITEROOT
+            def doxCustom = proj.task('doxygen', type: Doxygen )
+
+            doxCustom.configure {
+                source new File(TESTFSREADROOT,'sample-cpp')
+                outputDir new File(TESTFSWRITEROOT,'docs')
+
+                generate_xml   false
+                generate_latex false
+                generate_html  true
+                have_dot       false
+
+                template DOXY_TEMPLATE
+            }
+
+            doxCustom.exec()
+
+            def lines = new File(proj.buildDir,'tmp/DoxygenTaskSpec.doxyfile').text.readLines()
+
+        expect:
+            new File(TESTFSWRITEROOT,'docs/html').exists()
+            new File(TESTFSWRITEROOT,'docs/html/index.html').exists()
+            lines.find { 'FILE_PATTERNS ='}
+            doxCustom.inputs.files.contains(DOXY_TEMPLATE)
+
+
+
+    }
     // TODO: outputDir, output_directory -> check task properties
-    // TODO: template
     // TODO: image_path
-    // TODO: executables
 
 
 }

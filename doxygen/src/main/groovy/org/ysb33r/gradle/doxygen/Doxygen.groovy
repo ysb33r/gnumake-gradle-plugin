@@ -23,6 +23,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.process.ExecResult
 import org.ysb33r.gradle.doxygen.impl.DoxyfileEditor
 import org.ysb33r.gradle.doxygen.impl.DoxygenProperties
+import org.ysb33r.gradle.doxygen.impl.Executables
 
 /**
  * A wrapper task for calling GNU Make. This is useful for migrating legacy builds
@@ -42,7 +43,17 @@ class Doxygen extends SourceTask {
     @OutputDirectory
     File outputDir = new File(project.buildDir, 'docs/doxygen')
 
-//    static final def EXECUTABLES = [ 'doxygen', 'mscgen' ]
+    /** Constructs a Doxygen task object and sets some default Doxygen properties
+     *
+     */
+    Doxygen() {
+
+        doxyUpdate.setProperty('PROJECT_NUMBER', project.version)
+        doxyUpdate.setProperty('PROJECT_NAME', project.name)
+        doxyUpdate.setProperty('QUIET', project.logger.isQuietEnabled())
+        doxyUpdate.setProperty('WARNINGS', !project.logger.isQuietEnabled())
+
+    }
 
 //    /** Indicates whether Xml should be generated
 //     *
@@ -62,19 +73,22 @@ class Doxygen extends SourceTask {
      *
      * @return
      */
-     Map getExecutables() { paths }
+     def getExecutables() { paths.asImmutable() }
 
-//    /** Allows for setting paths to various executables. By default they would be searched for
-//     * in the search path.
-//     *
-//     * @param cfg A configuration closure
-//     *
-//     * <li>doxygen
-//     * <li>mscgen
-//     */
-//    void executables(Closure cfg) {
-//        throw new DoxygenException("Not implemented yet")
-//    }
+    /** Allows for setting paths to various executables. By default they would be searched for
+     * in the search path.
+     *
+     * @param cfg A configuration closure
+     *
+     * <li>doxygen
+     * <li>mscgen
+     */
+    void executables(Closure cfg) {
+        Closure cl = cfg.clone()
+        cl.delegate = new Executables(paths)
+        cl.resolveStrategy = Closure.DELEGATE_FIRST
+        cl.call()
+    }
 
     /** Sets the template Doxyfile to be used. If not supplied a default one will be
      * generated to be used as a template.
@@ -82,7 +96,7 @@ class Doxygen extends SourceTask {
      * @param tmpl Template Doxyfile
      */
     void template(final File tmpl) {
-        this.file tmpl
+        inputs.file tmpl
         templateFile = tmpl
     }
 
@@ -91,6 +105,9 @@ class Doxygen extends SourceTask {
      * @param paths
      */
     void image_path(final Object... paths) {
+
+        def workaround = imagePaths
+
         paths.each {
             File fName
             switch (it) {
@@ -102,12 +119,12 @@ class Doxygen extends SourceTask {
             }
 
             if (fName.isDirectory()) {
-                dir fName
+                inputs.dir fName
             } else {
-                file fName
+                inputs.file fName
             }
 
-            imagePaths.add(fName)
+            workaround.add(fName)
         }
     }
 
@@ -119,19 +136,6 @@ class Doxygen extends SourceTask {
         outputDir = outdir
     }
 
-    /** Constructs a Doxygen task object and sets some default Doxygen properties
-     *
-     */
-    Doxygen() {
-
-//        EXECUTABLES.each { paths[it] = it }
-
-        doxyUpdate.setProperty('PROJECT_NUMBER', project.version)
-        doxyUpdate.setProperty('PROJECT_NAME', project.name)
-        doxyUpdate.setProperty('QUIET', project.logger.isQuietEnabled())
-        doxyUpdate.setProperty('WARNINGS', !project.logger.isQuietEnabled())
-
-    }
 
     @TaskAction
     void exec() {
@@ -156,7 +160,15 @@ class Doxygen extends SourceTask {
                 throw new DoxygenException("'${name}' is ignored, use 'source' and 'sourceDir' instead (with exclude patterns as appropriate).")
                 break
 
+            case 'mscgen_path':
+            case 'dot_path':
+            case 'perl_path':
+            case 'hhc_location':
+                throw new DoxygenException("'${name}' is ignored, use 'executables' closure instead.")
+                break
+
             default:
+
                 if (name.find(/.+_.+/) && name.matches(/[_\p{Digit}\p{Lower}]{3,}/)) {
                     if (args.size() == 1) {
                         doxyUpdate.setProperty(name, args[0])
@@ -174,13 +186,13 @@ class Doxygen extends SourceTask {
     /** Returns the current hashmap of Doxygen properties that will override settings in the Doxygen file
      */
     def getDoxygenProperties() {
-        doxyUpdate.properties
+        doxyUpdate.properties.asImmutable()
     }
 
     /** Set some default values in the doxyUpdate
      *
      */
-    private void setDefaults() {
+    void setDefaults() {
 
         if (imagePaths.size()) {
             doxyUpdate.setProperty('IMAGE_PATH', imagePaths as File[])
@@ -188,6 +200,13 @@ class Doxygen extends SourceTask {
 
         doxyUpdate.setProperty('INPUT', source)
         doxyUpdate.setProperty('OUTPUT_DIRECTORY', outputDir)
+
+        def workaround = doxyUpdate
+        paths.each { name,path ->
+            if( name != 'doxygen' ) {
+                workaround.setProperty(Executables.EXECUTABLES[name],new File(path))
+            }
+        }
     }
 
     /** Creates a Doxyfile that will eventually be passed to the Doxygen executable.
@@ -234,12 +253,7 @@ class Doxygen extends SourceTask {
         ExecResult execResult = project.exec {
 
             executable  executables.doxygen
-
-//            if (this.workingDir) {
-//                workingDir = owner.workingDir
-//            }
-
-            args  cmdargs
+            args        cmdargs
         }
     }
 }

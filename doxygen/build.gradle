@@ -38,6 +38,7 @@ jar {
 test {
     systemProperties 'TESTFSREADROOT'  : new File(projectDir,'src/test/resources').absolutePath
     systemProperties 'TESTFSWRITEROOT' : new File(buildDir,'tmp/test/doxygen').absolutePath
+    systemProperties 'DOXY_TEMPLATE'   : new File(projectDir,'src/main/resources/doxyfile-template.dox').absolutePath
 
     if(project.properties.DO_NOT_RUN_DOXYGEN_EXE_TESTS) {
         systemProperties 'DO_NOT_RUN_DOXYGEN_EXE_TESTS' : '1'
