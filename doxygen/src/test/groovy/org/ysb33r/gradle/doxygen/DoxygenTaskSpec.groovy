@@ -201,7 +201,8 @@ class DoxygenTaskSpec extends spock.lang.Specification {
         expect:
             dox.inputs.files.contains(new File(TESTFSREADROOT,'non-existing1'))
             dox.inputs.files.contains(new File(TESTFSREADROOT,'non-existing2'))
-            dox.doxygenProperties['IMAGE_PATH'] == new File(TESTFSREADROOT,'non-existing1').absolutePath + ' ' + new File(TESTFSREADROOT,'non-existing2').absolutePath
+            dox.doxygenProperties['IMAGE_PATH'] == new File(TESTFSREADROOT,'non-existing1').absolutePath + ' ' +
+                    new File(TESTFSREADROOT,'non-existing2').absolutePath
 
     }
 
@@ -232,13 +233,7 @@ class DoxygenTaskSpec extends spock.lang.Specification {
             new File(TESTFSWRITEROOT,'docs/html/index.html').exists()
             lines.find { 'FILE_PATTERNS ='}
             doxCustom.inputs.files.contains(DOXY_TEMPLATE)
-
-
-
     }
-    // TODO: outputDir, output_directory -> check task properties
-    // TODO: image_path
-
 
 }
 
