@@ -1,5 +1,5 @@
 // ============================================================================
-// (C) Copyright Schalk W. Cronje 2013
+// (C) Copyright Schalk W. Cronje 2013-2014
 //
 // This software is licensed under the Apache License 2.0
 // See http://www.apache.org/licenses/LICENSE-2.0 for license details
@@ -10,16 +10,11 @@
 //
 // ============================================================================
 
-apply plugin: 'groovy'
-apply plugin: 'bintray-publish'
-
-group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
 ext.moduleName = 'gnumake-gradle-plugin'
 version = 0.1
 
 repositories {
-//    mavenRepo(url: 'http://repository.codehaus.org')
     mavenCentral()
 }
 
@@ -36,15 +31,6 @@ jar {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-    //TODO: archives javadocJar
-}
 
 uploadArchives  {
     repositories {

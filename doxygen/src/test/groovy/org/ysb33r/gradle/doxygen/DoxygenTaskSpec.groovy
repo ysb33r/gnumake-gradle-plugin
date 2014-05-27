@@ -35,6 +35,14 @@ class DoxygenTaskSpec extends spock.lang.Specification {
         TESTFSWRITEROOT.mkdirs()
 
         project.buildDir = TESTFSWRITEROOT
+
+        if(System.getProperty('DOXYGEN_PATH')) {
+            dox.configure {
+                executables {
+                    doxygen System.getProperty('DOXYGEN_PATH')
+                }
+            }
+        }
     }
 
     def "Setting specific Doxygen properties that take boolean values"() {
@@ -206,6 +214,7 @@ class DoxygenTaskSpec extends spock.lang.Specification {
 
     }
 
+    @IgnoreIf( {DO_NOT_RUN_DOXYGEN_EXE_TESTS} )
     def "When custom template is supplied, expect template to be copied and then modified"() {
         given:
             Project proj = ProjectBuilder.builder().withName('DoxygenTaskSpec').build()
@@ -222,6 +231,12 @@ class DoxygenTaskSpec extends spock.lang.Specification {
                 have_dot       false
 
                 template DOXY_TEMPLATE
+
+                if(System.getProperty('DOXYGEN_PATH')) {
+                    executables {
+                        doxygen System.getProperty('DOXYGEN_PATH')
+                    }
+                }
             }
 
             doxCustom.exec()

@@ -13,14 +13,10 @@
 apply plugin: 'groovy'
 apply plugin: 'bintray-publish'
 
-group = 'org.ysb33r.gradle'
 archivesBaseName = 'doxygen'
 ext.moduleName = 'doxygen-gradle-plugin'
 version = '0.1'
 
-repositories {
-    jcenter()
-}
 
 dependencies {
     compile gradleApi()
@@ -40,22 +36,19 @@ test {
     systemProperties 'TESTFSWRITEROOT' : new File(buildDir,'tmp/test/doxygen').absolutePath
     systemProperties 'DOXY_TEMPLATE'   : new File(projectDir,'src/main/resources/doxyfile-template.dox').absolutePath
 
+    // Use -PDO_NOT_RUN_DOXYGEN_EXE_TESTS=1 to skip any test that requires the 'doxygen' executable
     if(project.properties.DO_NOT_RUN_DOXYGEN_EXE_TESTS) {
         systemProperties 'DO_NOT_RUN_DOXYGEN_EXE_TESTS' : '1'
     }
 
-    // TODO: Maybe allow setting of doxygen path on command-line via -P
+    // The location of the doxygen executable can be controlled by setting -PDOXYGEN_PATH=/path/to/doxygen
+    // on the cmd-line
+    if(project.properties.DOXYGEN_PATH) {
+        systemProperties 'DOXYGEN_PATH' : new File(project.properties.DOXYGEN_PATH).absolutePath
+    }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
 
-artifacts {
-    archives sourcesJar
-    //TODO: archives javadocJar
-}
 
 uploadArchives  {
     repositories {
@@ -66,7 +59,13 @@ uploadArchives  {
             repoName    bintrayRepo
             packageName moduleName
             description 'This is a plugin for Gradle that allows Doxygen (www.doxygen.org) to be used to generate documentation'
-            tags        'gradle','doxygen'
+            tags        'gradle','doxygen','documentation'
+            licenses          'Apache-2.0'
+            vcsUrl            'https://github.com/ysb33r/Gradle.git'
+            autoCreatePackage true
+            updatePackage     true
+            gpgSign           true
+            gpgPassphrase     project.properties.bintrayGpgPassphrase
         }
     }
 }
