@@ -1,7 +1,7 @@
 Doxygen Plugin for Gradle
 =========================
 
-[Doxygen](http://www.doxygen.org) is a popular documentation tool, especially in the C/C++ world. This is plugin makes
+[Doxygen](http://www.doxygen.org) is a popular documentation tool, especially in the C/C++ world. This plugin makes
 it possible to generate documentation for any of the ```Doxygen``` supported languages, if such projects are built with
 [Gradle](http://www.gradle.org). There is an existing [Doxygen extension](***) for [Ant](http://ant.apache.org), which already 
 makes it possible for Gradle builds to utlise DOxygen via ```AntBuilder```, however this plugin takes a much more 
@@ -64,7 +64,7 @@ doxygen {
 }
 ```
 
-A pre-configured ```Doxyfile``` template can be supply. At build-time this template will be copied and appropriate
+A pre-configured ```Doxyfile``` template can be supplied. At build-time this template will be copied and appropriate
 values supplied via the configuration closure will be substituted. This is done via the ```template``` parameter.
 
 ```groovy
