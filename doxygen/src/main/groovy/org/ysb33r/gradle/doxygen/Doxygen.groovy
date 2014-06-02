@@ -192,12 +192,17 @@ class Doxygen extends SourceTask {
     /** Set some default values in the doxyUpdate
      *
      */
+    @groovy.transform.PackageScope
     void setDefaults() {
 
         if (imagePaths.size()) {
             doxyUpdate.setProperty('IMAGE_PATH', imagePaths as File[])
         }
 
+        if(source.files.empty) {
+            source 'src/main/cpp','src/main/headers','src/main/asm','src/main/objectiveC','src/main/objectiveCpp','src/main/c'
+        }
+        
         doxyUpdate.setProperty('INPUT', source)
         doxyUpdate.setProperty('OUTPUT_DIRECTORY', outputDir)
 
@@ -258,31 +263,5 @@ class Doxygen extends SourceTask {
     }
 }
 
-    /*
 
-1) Use doxygen to generate a template configuration file:
-    doxygen [-s] -g [configName]
-
-    If - is used for configName doxygen will write to standard output.
-
-2) Use doxygen to update an old configuration file:
-    doxygen [-s] -u [configName]
-
-3) Use doxygen to generate documentation using an existing configuration file:
-    doxygen [configName]
-
-    If - is used for configName doxygen will read from standard input.
-
-4) Use doxygen to generate a template file controlling the layout of the
-   generated documentation:
-    doxygen -l layoutFileName.xml
-
-5) Use doxygen to generate a template style sheet file for RTF, HTML or Latex.
-    RTF:        doxygen -w rtf styleSheetFile
-    HTML:       doxygen -w html headerFile footerFile styleSheetFile [configFile]
-    LaTeX:      doxygen -w latex headerFile footerFile styleSheetFile [configFile]
-
-6) Use doxygen to generate an rtf extensions file
-    RTF:   doxygen -e rtf extensionsFile
-     */
 
