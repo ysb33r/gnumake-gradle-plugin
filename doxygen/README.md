@@ -40,6 +40,7 @@ doxygen {
     generate_html true
     
     source new File(projectDir,'src/main/cpp')
+    source new File(projectDir,'src/main/headers')
 }
 ```
 
@@ -113,7 +114,6 @@ part of the dependencies of the task
 * ```MSCGEN_PATH``` - Use ```executables``` closure instead
 * ```PERL_PATH``` - Use ```executables``` closure instead
 * ```PROJECT_NAME``` - ```project.name``` will be used as the default value. If you want to override use ```project_name```
-* ```PROJECT_NUMBER``` - ```project.version``` will be used as the default value. If you want to override use 
-```project_number```
+* ```PROJECT_NUMBER``` - ```project.version``` will be used as the default value. If you want to override use ```project_number```
 
 
