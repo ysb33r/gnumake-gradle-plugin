@@ -14,7 +14,7 @@ import org.ysb33r.gradle.bintray.BintraySignVersion
 
 archivesBaseName = 'doxygen'
 ext.moduleName = 'doxygen-gradle-plugin'
-version = '0.1'
+version = '0.2-SNAPSHOT'
 
 
 dependencies {
