@@ -74,6 +74,7 @@ uploadArchives  {
         }
     }
 
+    onlyIf { !version.endsWith("SNAPSHOT") }
 }
 
 
