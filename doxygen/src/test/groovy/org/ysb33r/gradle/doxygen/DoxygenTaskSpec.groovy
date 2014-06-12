@@ -250,5 +250,40 @@ class DoxygenTaskSpec extends spock.lang.Specification {
             doxCustom.inputs.files.contains(DOXY_TEMPLATE)
     }
 
+    @IgnoreIf( {DO_NOT_RUN_DOXYGEN_EXE_TESTS} )
+    def "When 'template' is supplied as a string, configuration should still work"() {
+        given:
+            Project proj = ProjectBuilder.builder().withName('DoxygenTaskSpec').build()
+            proj.buildDir = TESTFSWRITEROOT
+            def doxCustom = proj.task('doxygen', type: Doxygen )
+
+            doxCustom.configure {
+                source new File(TESTFSREADROOT,'sample-cpp')
+                outputDir new File(TESTFSWRITEROOT,'docs')
+
+                generate_xml   false
+                generate_latex false
+                generate_html  true
+                have_dot       false
+
+                template DOXY_TEMPLATE.absolutePath
+
+                if(System.getProperty('DOXYGEN_PATH')) {
+                    executables {
+                        doxygen System.getProperty('DOXYGEN_PATH')
+                    }
+                }
+            }
+
+            doxCustom.exec()
+
+            def lines = new File(proj.buildDir,'tmp/DoxygenTaskSpec.doxyfile').text.readLines()
+
+        expect:
+            new File(TESTFSWRITEROOT,'docs/html').exists()
+            new File(TESTFSWRITEROOT,'docs/html/index.html').exists()
+            lines.find { 'FILE_PATTERNS ='}
+            doxCustom.inputs.files.contains(DOXY_TEMPLATE)
+    }
 }
 

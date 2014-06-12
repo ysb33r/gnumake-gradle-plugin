@@ -100,6 +100,15 @@ class Doxygen extends SourceTask {
         templateFile = tmpl
     }
 
+    /** Sets the template Doxyfile to be used. If not supplied a default one will be
+     * generated to be used as a template.
+     *
+     * @param tmpl Template Doxyfile
+     */
+    void template(final String tmpl) {
+        template new File(tmpl)
+    }
+
     /** Allows for one more image paths to be set
      *
      * @param paths

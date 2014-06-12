@@ -19,8 +19,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 
 /**
- * @author Noam Tenne
- * @author Andres Almiray
  */
 class AsciidocPlugin implements Plugin<Project> {
     void apply(Project project) {
