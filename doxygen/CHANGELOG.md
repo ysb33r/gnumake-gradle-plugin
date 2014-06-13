@@ -1,0 +1,10 @@
+CHANGELOG
+=========
+
+Version 0.2 - Roadmap
+---------------------
++ ['template' not recognised as configuration option](https://github.com/ysb33r/Gradle/issues/8)
+
+Version 0.1
+-----------
+Initial release
