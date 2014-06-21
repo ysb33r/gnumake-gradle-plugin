@@ -4,7 +4,7 @@ Doxygen Plugin for Gradle
 [Doxygen](http://www.doxygen.org) is a popular documentation tool, especially in the C/C++ world. This plugin makes
 it possible to generate documentation for any of the ```Doxygen``` supported languages, if such projects are built with
 [Gradle](http://www.gradle.org). There is an existing [Doxygen extension](***) for [Ant](http://ant.apache.org), which already 
-makes it possible for Gradle builds to utlise DOxygen via ```AntBuilder```, however this plugin takes a much more 
+makes it possible for Gradle builds to utilise ```Doxygen``` via ```AntBuilder```, however this plugin takes a much more 
 _gradlesque_ approach.
 
 Requirements
@@ -26,11 +26,11 @@ buildscript {
 	jcenter()
   }  
   dependencies {
-    classpath 'org.ysb33r.gradle:doxygen:0.1'
+    classpath 'org.ysb33r.gradle:doxygen:0.2'
   }
 }
 
-apply plugin : 'doxygen'
+apply plugin : 'org.ysb33r.doxygen'
 ```
 
 This will create a default task called ```doxygen``` which can be configured.
