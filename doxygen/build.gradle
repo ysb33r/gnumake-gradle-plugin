@@ -71,7 +71,7 @@ uploadArchives  {
             vcsUrl            'https://github.com/ysb33r/Gradle.git'
             autoCreatePackage true
             updatePackage     true
-            versionAttributes 'gradle-plugin' : "org.ysb33r.doxygen:${group}:${moduleName}"
+            versionAttributes 'gradle-plugin' : "org.ysb33r.doxygen:${group}:${archivesBaseName}"
         }
     }
 
