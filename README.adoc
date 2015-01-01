@@ -24,21 +24,25 @@ the *switches* property.
 == Supported Properties
 The following properties are supported:
 
-* `alwaysMake` boolean, same as -B.
-* `environmentOverrides` boolean, same as -e
-* `ignoreErrors` boolean, same as -i
-* `keepGoing` boolean, same as -k
-* `jobs`, integer, same as -j
-* `makefile` same as -f
-* `chDir` same as -C
-* `includeDirs` list, same as -I
-* `targets` list of targets to execute
-* `flags` map of variables to pass to make
-* `switches` list, arbitrary list of switches to pass to make.
-* `executable` location of make executable, defaults to 'make'
-* `workingDir` location where to start make from (not the same as *chDir*)
-* `tasks` alias for targets.
-   
+[cols="4*"]
+|===
+| Property | Type | Make Switch | Comment
+| `alwaysMake` | boolean | `-B` |
+| `environmentOverrides` | boolean | `-e` |
+| `ignoreErrors` | boolean | `-i` |
+| `keepGoing` | boolean | `-k` |
+| `jobs` | integer | `-j` |
+| `makefile` | string | `-f` |
+| `chDir` | string | `-C` |
+| `includeDirs` | list | `-I` |
+| `targets` | list | | Targets to execute
+| `flags` | map | | Variables to pass to make
+| `switches` | list | | Arbitrary list of switches to pass to make.
+| `executable` | | | Location of make executable, defaults to 'make'
+| `workingDir` | | | location where to start make from (not the same as *chDir*)
+| `tasks` |  | | Alias for targets.
+|===
+
 == Synopsis
 [source,groovy]
 ----
