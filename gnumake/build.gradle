@@ -12,17 +12,10 @@
 
 archivesBaseName = 'gnumake'
 ext.moduleName = 'gnumake-gradle-plugin'
-version = 0.1
+version = '0.2'
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    
-    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
 }
 
 jar {
@@ -42,6 +35,13 @@ uploadArchives  {
             packageName moduleName
             description 'This is a plugin for Gradle that allows invoking GNU Make builds'
             tags        'gradle','GNU','gmake','make','gnumake'
+            licenses          'Apache-2.0'
+            vcsUrl            'https://github.com/ysb33r/Gradle.git'
+            autoCreatePackage true
+            updatePackage     true
+            versionAttributes 'gradle-plugin' : "org.ysb33r.gnumake:${group}:${archivesBaseName}"
         }
     }
+
+    onlyIf { !version.endsWith("SNAPSHOT") }
 }

@@ -18,6 +18,7 @@ Previous versions of this document
 Known compatibility
 -------------------
 
++ 0.2 - Gradle 2.0
 + 0.1 - Gradle 1.12
 + 0.0.9 - Gradle 1.9
 + 0.0.3 - Gradle 1.6
@@ -54,7 +55,7 @@ buildscript {
 	jcenter()
   }  
   dependencies {
-    classpath 'org.ysb33r.gradle:gnumake:0.1'
+    classpath 'org.ysb33r.gradle:gnumake:0.2'
   }
 }
 
