@@ -17,15 +17,16 @@ buildscript {
     }
     dependencies {
         classpath 'org.ysb33r.gradle:bintray:1.5'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:2.2.3'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
+        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
     }
 }
 
 apply plugin : 'org.ysb33r.bintray'
 apply plugin : 'groovy'
 apply plugin : 'maven'
-apply plugin : 'artifactory'
-
+apply plugin : 'com.jfrog.artifactory'
+apply plugin : 'com.github.hierynomus.license'
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
 version = '0.3'
@@ -109,3 +110,13 @@ uploadArchives  {
     onlyIf { !version.endsWith("SNAPSHOT") }
 }
 
+license {
+    header = rootProject.file('config/HEADER')
+    strictCheck = true
+    ignoreFailures = false
+    mapping {
+        groovy ='DOUBLESLASH_STYLE'
+    }
+    ext.year = '2013-2015'
+    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
+}
