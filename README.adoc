@@ -38,9 +38,9 @@ The following properties are supported:
 | `targets` | list | | Targets to execute
 | `flags` | map | | Variables to pass to make
 | `switches` | list | | Arbitrary list of switches to pass to make.
-| `executable` | | | Location of make executable, defaults to 'make'
-| `workingDir` | | | location where to start make from (not the same as *chDir*)
-| `tasks` |  | | Alias for targets.
+| `executable` | string | | Location of make executable, defaults to 'make'
+| `workingDir` | string | | location where to start make from (not the same as *chDir*)
+| `tasks` | list | | Alias for targets.
 |===
 
 == Synopsis
