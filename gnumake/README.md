@@ -64,3 +64,14 @@ task runMake (type:GnuMakeBuild) {
   flags = [ DESTDIR : '/copy/files/here', BUILD_NUMBER : 12345 ]
 }
 ```
+
+It is also possible to set the executable and makefile name globally for all tasks
+
+```groovy
+gnumake {
+  executable = 'gmake'
+  makefile = 'OurOwnMakefileConvention'
+}
+```
+
+If the above two are not set in a task it will take the value from the global configuration.

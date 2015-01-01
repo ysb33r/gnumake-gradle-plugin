@@ -15,10 +15,17 @@ import org.ysb33r.gradle.gnumake.GnuMakeBuild
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 
-class GnuMakeSpec extends spock.lang.Specification {
-    def Project project = ProjectBuilder.builder().build()
-    def gnumake = project.task('gnumake', type: GnuMakeBuild )
-    
+class GnuMakeBuildSpec extends spock.lang.Specification {
+
+    Project project
+    def gnumake
+
+    void setup() {
+        project = ProjectBuilder.builder().build()
+        project.apply plugin:'org.ysb33r.gnumake'
+        gnumake = project.task('gnumake', type: GnuMakeBuild )
+    }
+
     def "Newly created Task will set executable to OS-specific value"() {
         expect:
         gnumake.executable == 'make'     
