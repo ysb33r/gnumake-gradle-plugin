@@ -8,9 +8,8 @@ the *switches* property.
 
 == Previous versions of this document
 
-* 0.2 - https://github.com/ysb33r/Gradle/blob/GNUMAKE_RELEASE_0_2/README.md
-* 0.0.9 - https://github.com/ysb33r/Gradle/blob/0.0.9_RELEASE/README.md
-* 0.0.2 - https://github.com/ysb33r/Gradle/blob/0.0.2_RELEASE/README.md
+* 0.2 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_2/README.md
+* 0.0.9 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/0.0.9_RELEASE/README.md
 
 == Known compatibility
 
