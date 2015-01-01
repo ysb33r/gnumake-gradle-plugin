@@ -14,11 +14,13 @@ import spock.lang.*
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
+import org.gradle.internal.os.OperatingSystem
 
 class GnuMakeBuildSpec extends spock.lang.Specification {
 
     Project project
     def gnumake
+    boolean isWindows = OperatingSystem.current().isWindows()
 
     void setup() {
         project = ProjectBuilder.builder().build()
@@ -127,7 +129,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
 
     }
     
-    def "if makefile is File then abolute path should not be added"() {
+    def "if makefile is File then absolute path should not be added"() {
         given:
         gnumake.makefile = new File ('../../Makefile')
         gnumake.buildCmdArgs()
@@ -135,7 +137,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
         expect:
         gnumake.cmdargs.size() == 2
         gnumake.cmdargs[0] == '-f'
-        gnumake.cmdargs[1] == "../../Makefile"
+        gnumake.cmdargs[1] == (isWindows ? '..\\..\\Makefile' : '../../Makefile')
     }
  
     def "chDir affects -C"() {
@@ -160,7 +162,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
         gnumake.cmdargs[0] == '-I'
         gnumake.cmdargs[1] == "localDir"
         gnumake.cmdargs[2] == '-I'
-        gnumake.cmdargs[3] == "../FileObjectDir"
+        gnumake.cmdargs[3] == (isWindows ? '..\\FileObjectDir' : '../FileObjectDir')
         gnumake.cmdargs[4] == '-I'
         gnumake.cmdargs[5] == "/absolutePath"
 
