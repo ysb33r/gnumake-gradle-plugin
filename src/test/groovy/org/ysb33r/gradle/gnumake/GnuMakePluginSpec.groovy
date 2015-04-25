@@ -21,14 +21,14 @@ class GnuMakePluginSpec extends spock.lang.Specification {
 
     Project project = ProjectBuilder.builder().build()
 
-    void setup() {
-        project.apply plugin:'org.ysb33r.gnumake'
-    }
-    
     def "Can apply GnuMake plugin to project"() {
 
-        expect:
-            project.extensions.gnumake != null
+        when:
+        project.apply plugin: 'org.ysb33r.gnumake'
+
+        then:
+        project.extensions.gnumake != null
+        project.tasks.make instanceof GnuMakeBuild
     }
 
 }

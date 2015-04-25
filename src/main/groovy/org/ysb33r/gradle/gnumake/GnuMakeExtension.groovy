@@ -15,23 +15,66 @@
 
 package org.ysb33r.gradle.gnumake
 
+import groovy.transform.PackageScope
 import groovy.transform.TupleConstructor
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
+import org.gradle.util.CollectionUtils
 
 /**
  * Created by schalkc on 01/01/15.
+ * @since 1.0
  */
 class GnuMakeExtension {
 
-    Project project
-
-    String executable
-    String makefile
+    String executable = 'make'
+    String makefile = 'Makefile'
 
     GnuMakeExtension(Project p) {
         project = p
 
-        executable = 'make'
-        makefile = null
+        switch(OperatingSystem.current()) {
+            case OperatingSystem.SOLARIS:
+            case OperatingSystem.FREE_BSD:
+                executable = 'gmake'
+                break;
+            default:
+                executable = 'make'
+        }
     }
+
+
+    /** Arguments that will be added to make invocations.
+     *
+     * @return List of executable arguments
+     *
+     * @see {@link #execArgs}
+     */
+    List<String> getExecArgs() {
+        CollectionUtils.stringize(args)
+    }
+
+    /** Arguments that will be added to make invocations.
+     * These arguments added to the frontt of the GnuMakeBuild tasks
+     * arguments i.e. directly following the executable when run.
+     * This is the recommended approach when running some kind of environment
+     * preparation i.e
+     *
+     * @code
+     * gnumake {
+     *     executable 'run_on_remote_build_server.sh'
+     *     execArgs '--server', 'server.com', '/opt/pi/make'
+     * }
+     * @endcode
+     *
+    */
+    void execArgs(Object... args) {
+        this.args.addAll(args as List)
+    }
+
+    Map defaultFlags = [:]
+
+    private List<Object> args = []
+    private Project project
+
 }

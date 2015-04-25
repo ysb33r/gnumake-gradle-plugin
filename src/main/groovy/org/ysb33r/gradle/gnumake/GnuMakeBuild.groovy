@@ -16,12 +16,17 @@
 
 package org.ysb33r.gradle.gnumake
 
-
+import groovy.transform.CompileDynamic
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.process.ExecResult
+import org.gradle.util.CollectionUtils
+import org.ysb33r.gradle.gnumake.internal.InputOutputMonitor
 
 /**
  * A wrapper task for calling GNU Make. This is useful for migrating legacy builds
@@ -30,79 +35,15 @@ import org.gradle.process.ExecResult
  *
  * @author Schalk W. Cronjé
  */
+@CompileStatic
 class GnuMakeBuild extends DefaultTask {
 
-    /** List of targets to execute
-     *
+    /** Indicates whether default flags should be inherited from the {@code gnumake} extension.
+     * Default is {@code true}
+     * @since 1.0
      */
     @Input
-    @Optional
-    List<String> targets = []
-
-    /** Flags/variables to pass to make.
-     * @code
-     * flags = [ DESTDIR : '/path/to/somewhere', BUILD_NUMBER : 12345 ]
-     * @endcode
-     */
-    @Input
-    @Optional
-    Map<String, Object> flags = [:]
-
-    /** Arbitrary GNU Make command-line switches to pass. This allows flexibility to
-     * pass anything above and beyond basic functionality already supported in this
-     * task class. Supplied are passed as the last items on the command-line to
-     * make and as such can override any previous setting set up through properties
-     * on the GnuMake class.
-     *
-     */
-    @Input
-    @Optional
-    def switches = []
-
-    /** The make executable. If not set, will default to an OS-specific name
-     * without any prefix, therefore relying on the system path to find.
-     */
-    @Input
-    String getExecutable() {
-        this.executable ?: project.extensions.getByName('gnumake').executable
-    }
-
-    /** The make executable.
-     */
-    String setExecutable(final String exe) {
-        this.executable = exe
-    }
-
-    /** Directory where to start make from. This is @b NOT the same as passing
-     * -C. (See chdir for that).
-     */
-    @Input
-    @Optional
-    String workingDir
-
-    /** After starting make, change to this directory before reading the Makefile.
-     * This is the equivalent of passing -C to make
-     */
-    @Input
-    @Optional
-    String chDir
-
-    /** Makefile to use. If not supplied will resort to the default behaviour of make,
-     * which is usually to look for a file called Makefile or GNUMakefile.
-     * This is the equivalent of passing -f to make.
-     */
-    @Input
-    String getMakefile() {
-        this.makefile ?: project.extensions.getByName('gnumake').makefile
-    }
-
-    /** Makefile to use. If not supplied will resort to the default behaviour of make,
-     * which is usually to look for a file called Makefile or GNUMakefile.
-     * This is the equivalent of passing -f to make.
-     */
-    String setMakefile(final String name) {
-        this.makefile = name
-    }
+    boolean defaultFlags = true
 
     /** Force targets to be rebuilt, even if they are already up to date
      * This is equivalent of passing -B to make
@@ -111,7 +52,7 @@ class GnuMakeBuild extends DefaultTask {
     @Optional
     boolean alwaysMake = false
 
-    /** Tell make that varibales from the environment takes precedence over varibales defined
+    /** Tell make that varibales from the environment takes precedence over variables defined
      * inside makefile.
      * This is equivalent of passing -e to make
      */
@@ -125,17 +66,6 @@ class GnuMakeBuild extends DefaultTask {
     @Input
     @Optional
     boolean ignoreErrors = false
-
-    /** List of include directories to search for included makefiles.
-     * This is equivalent to passing -I to make
-     *
-     * @code
-     * includeDirs = [ '/path/to/place1', new File ('/path/to/place2' ) ]
-     * @endcode
-     */
-    @Input
-    @Optional
-    def includeDirs = []
 
     /** Set make concurrency level.
      * This is equivalent of passing -j to make.
@@ -151,24 +81,331 @@ class GnuMakeBuild extends DefaultTask {
     @Optional
     boolean keepGoing = false
 
-    /** Stores the result of running an make command */
+
+    /** List of targets to execute
+     *
+     */
+    @Input
+    @Optional
+    List<String> getTargets() {
+        CollectionUtils.stringize(this.targets)
+    }
+
+    /** Resets targets and assigns a new set.
+     *
+     * @param targets_ List of targets to use
+     */
+    void setTargets(Object... targets_) {
+        this.targets.clear()
+        this.targets.addAll(targets_ as List)
+    }
+
+    /** Appends to current set of targets.
+     *
+     * @param targets_ List of targets to use
+     * @since 1.0
+     */
+    void targets(Object... targets_) {
+        this.targets.addAll(targets_ as List)
+    }
+
+    /** Returns the set of flags that were supplied. Unless {@code defaultFlags} is {@code false}
+     * the flags from {@code gnumake.defaultFlags} will be included
+     *
+     * @return A sets of flags that needs to be passed to make
+     */
+    @Input
+    @Optional
+    @CompileDynamic
+    Map getFlags() {
+        if( defaultFlags && project.extensions.findByName('gnumake') ) {
+            project.gnumake.defaultFlags + this.flags
+        } else {
+            this.flags
+        }
+    }
+
+    /** Resets the existing flags to the supplied set of flags/variables to pass to make.
+     * @code
+     * setFlags DESTDIR : '/path/to/somewhere', BUILD_NUMBER : 12345
+     * @endcode
+     */
+    void setFlags(Map a) {
+        this.flags.clear()
+        this.flags += a
+    }
+
+    /** Appends flags/variables to pass to make.
+     * @code
+     * flags DESTDIR : '/path/to/somewhere', BUILD_NUMBER : 12345
+     * @endcode
+     * @since 1.0
+     */
+    void flags(Map a) {
+        this.flags+= a
+    }
+
+    /** Arbitrary GNU Make command-line switches to pass. This allows flexibility to
+     * pass anything above and beyond basic functionality already supported in this
+     * task class. Supplied switches are passed as the last items on the command-line to
+     * make and as such can override any previous setting set up through properties
+     * on the GnuMake class.
+     */
+    @Input
+    @Optional
+    List<String> getSwitches() {
+        CollectionUtils.stringize(this.switches)
+    }
+
+    /** Resets the list of arbitrary GNU Make command-line switches and replace them with
+     * the supplied list.
+     *
+     * @param sw New list of switches to use.
+     */
+    void setSwitches(Object... sw) {
+        this.switches.clear()
+        this.switches.addAll(sw as List)
+    }
+
+    /** Appends to the list of arbitrary GNU Make command-line switches.
+     *
+     * @param sw List of switches to append.
+     */
+    void switches(Object... sw) {
+        this.switches.addAll(sw as List)
+    }
+
+    /** The make executable. If not set, will default to an OS-specific name
+     * without any prefix, therefore relying on the system path to find.
+     */
+    @Input
+    @CompileDynamic
+    String getExecutable() {
+        this.executable ?: project.extensions.getByName('gnumake').executable
+    }
+
+    /** The make executable.
+     */
+    String setExecutable(final Object exe) {
+        this.executable = exe.toString()
+    }
+
+    /** The make executable.
+     */
+    String executable(final Object exe) {
+        setExecutable(exe)
+    }
+
+    /** Directory where to start make from. This is @b NOT the same as passing
+     * -C. (See chdir for that).
+     */
+    @Input
+    @Optional
+    @CompileDynamic
+    File getWorkingDir() {
+        this.workingDir ? project.file(this.workingDir) : null
+    }
+
+    /** Sets the working directory where to start make from. This is @b NOT the same as passing
+     * -C. (See chdir for that).
+     * @param dir Working directory. This will be evaluated use {@code project.file}/
+     */
+    void setWorkingDir(Object dir) {
+        this.workingDir = dir
+    }
+
+    /** Sets the working directory where to start make from. This is @b NOT the same as passing
+     * -C. (See chdir for that).
+     * @param dir Working directory. This will be evaluated use {@code project.file}/
+     */
+    void workingDir(Object dir) {
+       setWorkingDir(dir)
+    }
+
+    /** After starting make, change to this directory before reading the Makefile.
+     * This is the equivalent of passing -C to make
+     */
+    @Input
+    @Optional
+    @CompileDynamic
+    File getChDir() {
+        this.chDir ? project.file(this.chDir) : null
+    }
+
+    /** After starting make, change to this directory before reading the Makefile.
+     * This is the equivalent of passing -C to make
+     * @param dir Change-to directory. This will be evaluated use {@code project.file}/
+     */
+    void setChDir(Object dir) {
+        this.chDir = dir
+    }
+
+    /** After starting make, change to this directory before reading the Makefile.
+     * This is the equivalent of passing -C to make
+     * @param dir Change-to directory. This will be evaluated use {@code project.file}/
+     */
+    void chDir(Object dir) {
+        setChDir(dir)
+    }
+
+    /** Makefile to use. If not supplied will resort to the default behaviour of make,
+     * which is usually to look for a file called Makefile or GNUMakefile.
+     * This is the equivalent of passing -f to make.
+     */
+    @Input
+    @CompileDynamic
+    String getMakefile() {
+        this.makefile ?: project.extensions.getByName('gnumake').makefile
+    }
+
+    /** Makefile to use. If not supplied will resort to the default behaviour of make,
+     * which is usually to look for a file called Makefile or GNUMakefile.
+     * This is the equivalent of passing -f to make.
+     */
+    void setMakefile(final String name) {
+        this.makefile = name
+    }
+
+    /** Makefile to use. If not supplied will resort to the default behaviour of make,
+     * which is usually to look for a file called Makefile or GNUMakefile.
+     * This is the equivalent of passing -f to make.
+     */
+    void makefile(final String name) {
+        setMakefile(name)
+    }
+
+    /** List of include directories to search for included makefiles.
+     * This is equivalent to passing -I to make
+     *
+     * @code
+     * includeDirs '/path/to/place1', new File ('/path/to/place2' )
+     * @endcode
+     */
+    @Input
+    @Optional
+    @CompileDynamic
+    FileCollection getIncludeDirs() {
+        project.files(this.includeDirs)
+    }
+
+    /** Resets the list of directories to search for included makefiles and
+     * replaces with the supplied list
+     *
+     * @param dirs List of directories. Will be evaluated using {@pcode roject.files}
+     */
+    void setIncludeDirs(Object... dirs) {
+        includeDirs.clear()
+        includeDirs.addAll(dirs as List)
+    }
+
+    /** Appends to the list of directories to search for included makefiles.
+     *
+     * @param dirs List of directories. Will be evaluated using {@pcode roject.files}
+     */
+    void includeDirs(Object... dirs) {
+        includeDirs.addAll(dirs as List)
+    }
+
+    /** Adds sources that need to be monitored as part of the decision to determine up to date status.
+     *
+     * @param cfg Configurating closure. Takes {@code dir}, {@code file} and {@code files} as per {@code TaskInputs}
+     */
+    @CompileDynamic
+    void makeInputs(Closure cfg) {
+        def cfg2 = cfg.clone()
+        cfg2.delegate = inMonitor
+        cfg2.resolveStrategy = Closure.DELEGATE_FIRST
+        cfg2()
+    }
+
+    /** Adds outputs that need to be monitored as part of the decision to determine up to date status.
+     *
+     * @param cfg Configurating closure. Takes {@code dir}, {@code file} and {@code files} as per {@code TaskOutputs}
+     */
+    @CompileDynamic
+    void makeOutputs(Closure cfg) {
+        def cfg2 = cfg.clone()
+        cfg2.delegate = outMonitor
+        cfg2.resolveStrategy = Closure.DELEGATE_FIRST
+        cfg2()
+    }
+
+    /** Stores the result of running a make command */
     ExecResult execResult
 
-    /** Stores the command line arguments passed to make
-     * on last run. Do not attempt to update this as it will
-     * automatically be overwritten by an invovation of the
-     * task action.
+    /** Returns the command line arguments passed to make
+     * on last run.
      */
-    def cmdargs = []
+    List<String> getCmdArgs() {
+        cmdargs
+    }
+
+    @TaskAction
+    @CompileDynamic
+    void exec() {
+
+        buildCmdArgs()
+        File wd = getWorkingDir()
+
+        execResult = project.exec {
+
+            executable = this.getExecutable()
+
+            if (wd) {
+                workingDir = wd
+            }
+
+            args = cmdargs
+        }
+    }
+
+    @Deprecated
+    void setTasks(Object... targets_) {
+        logger.warn "'tasks/setTasks' is deprecated. Please use 'targets/setTargets' instead."
+        setTargets targets_
+    }
+
+    @Deprecated
+    List<String> getTasks() {
+        logger.warn "'getTasks' is deprecated. Please use 'getTargets' instead."
+
+        getTargets()
+    }
+
+    @Deprecated
+    void setDir(def chDir_) {
+        logger.warn "'dir/setDir' is deprecated. Please use 'chdir/setChDir' instead."
+        chDir = chDir_
+    }
+
+    @Deprecated
+    File getDir() {
+        logger.warn "'getDir' is deprecated. Please use 'getChDir' instead."
+        getChDir()
+    }
+
+    @Deprecated
+    void setBuildFile(final String makefile_) {
+        logger.warn "'setBuildFile' is deprecated. Please use 'setMakefile' instead."
+        setMakefile(makefile_)
+    }
+
+    @Deprecated
+    String getBuildFile() {
+        logger.warn "'getBuildFile' is deprecated. Please use 'getMakefile' instead."
+        getMakefile()
+    }
 
     /** Builds the command line and updates cmdargs.
      * This is not usually called directly by an external process,
      * but it is useful to call in order to determine what the effect
      * of the current properties will be on the command-line.
      */
-    void buildCmdArgs() {
-        cmdargs = [
+    @CompileDynamic
+    @PackageScope
+    List<String> buildCmdArgs() {
 
+        cmdargs = project.extensions.getByName('gnumake').execArgs + [
                 [alwaysMake, '-B'],
                 [environmentOverrides, '-e'],
                 [ignoreErrors, '-i'],
@@ -179,53 +416,24 @@ class GnuMakeBuild extends DefaultTask {
 
         ].collectMany { it.head() ? it.tail() : [] } +
 
-                (includeDirs.collectMany { ['-I', "${it.toString()}"] }) +
+                (getIncludeDirs().files.collectMany { ['-I', "${it.toString()}"] }) +
                 targets +
                 flags.collect { k, v -> "$k=$v" } +
                 switches
     }
 
-    @TaskAction
-    void exec() {
 
-        buildCmdArgs()
-
-        execResult = project.exec {
-
-            executable = this.getExecutable()
-
-            if (this.workingDir) {
-                workingDir = this.workingDir
-            }
-
-            args = cmdargs
-        }
-    }
-
-    /** Provided convention compatibility with GradleBuild task.
-     * 'tasks' is an alias for 'targets'
-     */
-    void setTasks(def targets_) { targets = targets_ }
-
-    def getTasks() { targets }
-
-    /** Provided convention compatibility with GradleBuild task.
-     * 'dir' is an alias for 'chDir'
-     */
-    void setDir(def chDir_) { chDir = chDir_ }
-
-    def getDir() { chDir }
-
-    /** Provided convention compatibility with GradleBuild task.
-     * 'buildFile' is an alias for 'makefile'
-     */
-    void setBuildFile(def makefile_) { setMakefile(makefile_) }
-
-    def getBuildFile() { getMakefile() }
 
     private String executable
     private String makefile
 
-
-
+    private List<Object> switches = []
+    private List<Object> targets = []
+    private List<Object> includeDirs = []
+    private Map flags = [:]
+    private Object workingDir
+    private Object chDir
+    private List<String> cmdargs = []
+    private InputOutputMonitor inMonitor = new InputOutputMonitor(this,'inputs')
+    private InputOutputMonitor outMonitor = new InputOutputMonitor(this,'outputs')
 }

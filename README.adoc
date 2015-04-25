@@ -21,8 +21,8 @@ the *switches* property.
 * 0.0.2 - Gradle 1.6
 
 
-== Supported Properties
-The following properties are supported:
+== Supported Attributes
+The following attributes are supported:
 
 [cols="4*"]
 |===
@@ -40,10 +40,14 @@ The following properties are supported:
 | `switches` | list | | Arbitrary list of switches to pass to make.
 | `executable` | string | | Location of make executable, defaults to 'make'
 | `workingDir` | string | | location where to start make from (not the same as *chDir*)
-| `tasks` | list | | Alias for targets.
 |===
 
-== Synopsis
+== Deprecated Attributes
+
+| `tasks` | list | | Alias for targets.
+
+== Usage
+
 [source,groovy]
 ----
 
@@ -52,15 +56,29 @@ buildscript {
 	jcenter()
   }  
   dependencies {
-    classpath 'org.ysb33r.gradle:gnumake:0.3'
+    classpath 'org.ysb33r.gradle:gnumake:1.0'
   }
 }
+
+apply plugin : 'org.ysb33r.gnumake'
+
+make {
+  targets 'build','install'
+  flags  DESTDIR : '/copy/files/here', BUILD_NUMBER : '12345'
+}
+----
+
+Additional tasks can be created and configured
+
+[source,groovy]
+----
+
 
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
 
 task runMake (type:GnuMakeBuild) {
-  targets = ['build','install']
-  flags = [ DESTDIR : '/copy/files/here', BUILD_NUMBER : 12345 ]
+  targets 'build','install'
+  flags  DESTDIR : '/copy/files/here', BUILD_NUMBER : '12345'
 }
 ----
 
@@ -71,7 +89,9 @@ It is also possible to set the executable and makefile name globally for all tas
 gnumake {
   executable = 'gmake'
   makefile = 'OurOwnMakefileConvention'
+  defaultFlags BUILD_NUMBER : '12345'
 }
 ----
 
-If the above two are not set in a task it will take the value from the global configuration.
+Tasks will default to `executable` and `makefile` if not set. `defaultFlags` will be added to the existing flags on
+the task unless the `defaultFlags` property on the task is set to `false`.

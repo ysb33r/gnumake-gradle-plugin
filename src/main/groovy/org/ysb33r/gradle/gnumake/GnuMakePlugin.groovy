@@ -24,6 +24,10 @@ import org.gradle.api.Project
  */
 class GnuMakePlugin implements Plugin<Project> {
     void apply(Project project) {
+
         project.extensions.create('gnumake', GnuMakeExtension, project)
+        project.tasks.create( 'make', GnuMakeBuild )
+
     }
+
 }

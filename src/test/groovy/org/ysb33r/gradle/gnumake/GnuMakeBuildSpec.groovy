@@ -20,251 +20,311 @@ import org.gradle.internal.os.OperatingSystem
 
 class GnuMakeBuildSpec extends spock.lang.Specification {
 
+    static def stashedSystemOut = System.out
+
     Project project
     def gnumake
+    def systemOut
     boolean isWindows = OperatingSystem.current().isWindows()
+
+    void captureStdOut() {
+        systemOut = new ByteArrayOutputStream()
+        System.out = new PrintStream(systemOut)
+    }
 
     void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin:'org.ysb33r.gnumake'
-        gnumake = project.task('gnumake', type: GnuMakeBuild )
+        gnumake = project.task('foomake', type: GnuMakeBuild )
+        System.out = stashedSystemOut
+        systemOut = null
     }
 
     def "Newly created Task will set executable to OS-specific value"() {
         expect:
-        gnumake.executable == 'make'     
+        gnumake.executable == 'make'
     }
-    
+
     def "Newly created Task will have empty command line"() {
         expect:
-        gnumake.cmdargs.size() == 0
+        gnumake.cmdArgs.size() == 0
     }
-    
+
     def "alwaysMake adds -B" () {
-        
+
         given:
         gnumake.alwaysMake = true
         gnumake.buildCmdArgs()
-            
+
         expect:
-        gnumake.cmdargs.size() == 1
-        gnumake.cmdargs.contains('-B')
+        gnumake.cmdArgs.size() == 1
+        gnumake.cmdArgs.contains('-B')
     }
 
     def "keepGoing adds -k" () {
-        
+
         given:
         gnumake.keepGoing = true
         gnumake.buildCmdArgs()
-            
+
         expect:
-        gnumake.cmdargs.size() == 1
-        gnumake.cmdargs.contains('-k')
+        gnumake.cmdArgs.size() == 1
+        gnumake.cmdArgs.contains('-k')
     }
 
     def "environmentOverrides adds -e" () {
-        
+
         given:
         gnumake.environmentOverrides = true
         gnumake.buildCmdArgs()
-            
+
         expect:
-        gnumake.cmdargs.size() == 1
-        gnumake.cmdargs.contains('-e')
+        gnumake.cmdArgs.size() == 1
+        gnumake.cmdArgs.contains('-e')
     }
 
     def "ignoreErrors adds -i" () {
-        
+
         given:
         gnumake.ignoreErrors = true
         gnumake.buildCmdArgs()
-            
+
         expect:
-        gnumake.cmdargs.size() == 1
-        gnumake.cmdargs.contains('-i')
+        gnumake.cmdArgs.size() == 1
+        gnumake.cmdArgs.contains('-i')
     }
 
     def "jobs affect -j" () {
-                
+
         when: "jobs == 1"
         gnumake.jobs = 1
         gnumake.buildCmdArgs()
-            
+
         then: "-j will not be added"
-        gnumake.cmdargs.size() == 0
+        gnumake.cmdArgs.size() == 0
 
         when: "jobs < 1"
         gnumake.jobs = -3
         gnumake.buildCmdArgs()
-        
+
         then: "-j will not be added"
-        gnumake.cmdargs.size() == 0
+        gnumake.cmdArgs.size() == 0
 
         when: "jobs > 1"
         gnumake.jobs = 4
         gnumake.buildCmdArgs()
 
         then: "-j will be added"
-        gnumake.cmdargs.size() == 2
-        gnumake.cmdargs[0] == '-j'
-        gnumake.cmdargs[1] == '4'
+        gnumake.cmdArgs.size() == 2
+        gnumake.cmdArgs[0] == '-j'
+        gnumake.cmdArgs[1] == '4'
     }
 
     def "if makefile is empty -f is not added"() {
         given:
-        gnumake.makefile = ''   
+        gnumake.makefile = ''
         gnumake.buildCmdArgs()
-        
+
         expect:
-        gnumake.cmdargs.size() == 0
+        gnumake.cmdArgs.size() == 0
     }
-    
+
     def "if makefile is String add asis"() {
         given:
-        gnumake.makefile = 'Makefile'
+        gnumake.makefile = 'Xakefile'
         gnumake.buildCmdArgs()
-        
+
         expect:
-        gnumake.cmdargs.size() == 2
-        gnumake.cmdargs[0] == '-f'
-        gnumake.cmdargs[1] == "Makefile"
+        gnumake.cmdArgs.size() == 2
+        gnumake.cmdArgs[0] == '-f'
+        gnumake.cmdArgs[1] == 'Xakefile'
 
     }
-    
+
     def "if makefile is File then absolute path should not be added"() {
         given:
-        gnumake.makefile = new File ('../../Makefile')
-        gnumake.buildCmdArgs()
-        
+            gnumake.makefile = new File ('../../Makefile')
+            gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.size() == 2
-        gnumake.cmdargs[0] == '-f'
-        gnumake.cmdargs[1] == (isWindows ? '..\\..\\Makefile' : '../../Makefile')
+            gnumake.cmdArgs.size() == 2
+            gnumake.cmdArgs[0] == '-f'
+            gnumake.cmdArgs[1] == (isWindows ? '..\\..\\Makefile' : '../../Makefile')
     }
- 
+
     def "chDir affects -C"() {
         given:
-        gnumake.chDir = './change/here'
-        gnumake.buildCmdArgs()
-        
+            gnumake.chDir = './change/here'
+            gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.size() == 2
-        gnumake.cmdargs[0] == '-C'
-        gnumake.cmdargs[1] == "./change/here"
+            gnumake.cmdArgs.size() == 2
+            gnumake.cmdArgs[0] == '-C'
+            gnumake.cmdArgs[1] == "./change/here"
 
     }
-  
+
     def "includeDirs adds -I plus path"() {
         given:
-        gnumake.includeDirs = [ 'localDir', new File ('../FileObjectDir'), '/absolutePath' ]
-        gnumake.buildCmdArgs()
-        
+          gnumake.includeDirs 'localDir', new File ('../FileObjectDir'), '/absolutePath'
+          gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.size() == 6
-        gnumake.cmdargs[0] == '-I'
-        gnumake.cmdargs[1] == "localDir"
-        gnumake.cmdargs[2] == '-I'
-        gnumake.cmdargs[3] == (isWindows ? '..\\FileObjectDir' : '../FileObjectDir')
-        gnumake.cmdargs[4] == '-I'
-        gnumake.cmdargs[5] == "/absolutePath"
+          gnumake.cmdArgs.size() == 6
+          gnumake.cmdArgs[0] == '-I'
+          gnumake.cmdArgs[1] == project.file('localDir').toString()
+          gnumake.cmdArgs[2] == '-I'
+          gnumake.cmdArgs[3] == project.file('../FileObjectDir').toString()
+          gnumake.cmdArgs[4] == '-I'
+          gnumake.cmdArgs[5] == '/absolutePath'
 
     }
-    
+
     def "targets are added in order specified"() {
         given:
-        gnumake.targets = ['clean','install']
-        gnumake.buildCmdArgs()
-        
+          gnumake.targets 'clean','install'
+          gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.size() == 2
-        gnumake.cmdargs[0] == 'clean'
-        gnumake.cmdargs[1] == 'install'
+          gnumake.cmdArgs.size() == 2
+          gnumake.cmdArgs[0] == 'clean'
+          gnumake.cmdArgs[1] == 'install'
     }
-    
+
     def "flags are added in the format X=Y"() {
         given:
-        gnumake.flags = [ DESTDIR : '/path/somewhere', BUILD_NUMBER : 12345 ]          
-        gnumake.buildCmdArgs()
-            
+            gnumake.flags DESTDIR : '/path/somewhere', BUILD_NUMBER : 12345
+            gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.size() == 2
-        gnumake.cmdargs.contains( "BUILD_NUMBER=12345${''}" )
-        gnumake.cmdargs.contains( "DESTDIR=/path/somewhere${''}" )
+            gnumake.cmdArgs.size() == 2
+            gnumake.cmdArgs.contains( "BUILD_NUMBER=12345${''}" )
+            gnumake.cmdArgs.contains( "DESTDIR=/path/somewhere${''}" )
     }
-    
+
     def "arbitrary switches are added at the end"() {
         given:
-        gnumake.ignoreErrors = true
-        gnumake.targets = ['clean']
-        gnumake.switches = ['-X','-Y','-Z']
-        gnumake.buildCmdArgs()
-        
+            gnumake.ignoreErrors = true
+            gnumake.targets 'clean'
+            gnumake.switches  '-X','-Y','-Z'
+            gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.size() == 5
-        gnumake.cmdargs[2] == '-X'
-        gnumake.cmdargs[3] == '-Y'
-        gnumake.cmdargs[4] == '-Z'   
+            gnumake.cmdArgs.size() == 5
+            gnumake.cmdArgs[2] == '-X'
+            gnumake.cmdArgs[3] == '-Y'
+            gnumake.cmdArgs[4] == '-Z'
     }
-    
+
     def "Ordering is InternalSwitches + targets + flags + extraSwitches"() {
         given:
-        gnumake.ignoreErrors = true
-        gnumake.targets = ['clean']
-        gnumake.flags = [DESTDIR:'/path/somewhere']
-        gnumake.switches = [ '-q', '-n']
-        gnumake.buildCmdArgs()
-        
+            gnumake.ignoreErrors = true
+            gnumake.targets 'clean'
+            gnumake.flags DESTDIR:'/path/somewhere'
+            gnumake.switches  '-q', '-n'
+            gnumake.buildCmdArgs()
+
         expect:
-        gnumake.cmdargs.join(' ') == "-i clean DESTDIR=/path/somewhere -q -n"
+            gnumake.cmdArgs.join(' ') == "-i clean DESTDIR=/path/somewhere -q -n"
     }
-    
-    def "Tasks are an alias for Targets, therefore writing tasks, should update targets"() {
+
+    def "'tasks' is an alias for 'targets', therefore writing tasks, should update targets"() {
         given:
-        gnumake.tasks = [ 'build','install' ]
-        
+          captureStdOut()
+            gnumake.tasks = ['build','install']
+
         expect:
-        gnumake.targets == [ 'build','install' ]
+            gnumake.targets == [ 'build','install' ]
+            systemOut.toString().contains('deprecated')
     }
-    
-    def "Tasks are an alias for Targets, therefore writing targets, tasks should reflect"() {
+
+    def "'tasks' is an alias for 'targets', therefore writing targets, tasks should reflect"() {
         given:
-        gnumake.targets = [ 'build','install' ]
-        
+          captureStdOut()
+            gnumake.targets  'build','install'
+
         expect:
-        gnumake.tasks == [ 'build','install' ]
+            gnumake.tasks == [ 'build','install' ]
+            systemOut.toString().contains('deprecated')
     }
- 
+
     def "BuildFile is an alias for Makefile, therefore writing buildFile, should update makefile"() {
         given:
-        gnumake.buildFile = 'GNUMakefile'
-        
+          captureStdOut()
+            gnumake.buildFile = 'GNUMakefile'
+
         expect:
-        gnumake.makefile == 'GNUMakefile'
+            gnumake.makefile == 'GNUMakefile'
+            systemOut.toString().contains('deprecated')
     }
-    
+
     def "BuildFile are an alias for Makefile, therefore writing makefile, buildFile should reflect"() {
         given:
-        gnumake.makefile = 'GNUMakefile'
-        
+          captureStdOut()
+            gnumake.makefile = 'GNUMakefile'
+
         expect:
-        gnumake.buildFile == 'GNUMakefile'
+            gnumake.buildFile == 'GNUMakefile'
+            systemOut.toString().contains('deprecated')
     }
 
     def "Dir is an alias for chDir, therefore writing dir, should update chDir"() {
         given:
-        gnumake.dir = '/path/to/somewhere'
-        
+          captureStdOut()
+            gnumake.dir  '/path/to/somewhere'
+
         expect:
-        gnumake.chDir == '/path/to/somewhere'
-    }
-    
-    def "Dir is an alias for chDir, therefore writing chDir, dir should reflect"() {
-        given:
-        gnumake.chDir = '/path/to/somewhere'
-        
-        expect:
-        gnumake.dir == '/path/to/somewhere'
+            gnumake.chDir == new File('/path/to/somewhere')
+            systemOut.toString().contains('deprecated')
     }
 
+    def "Dir is an alias for chDir, therefore writing chDir, dir should reflect"() {
+        given:
+          captureStdOut()
+            gnumake.chDir '/path/to/somewhere'
+
+        expect:
+            gnumake.dir == new File('/path/to/somewhere')
+            systemOut.toString().contains('deprecated')
+    }
+
+    def "execArgs must follow executable directly before anything else"() {
+        given:
+          project.extensions.gnumake.executable 'fooMake'
+          project.extensions.gnumake.execArgs   '-k', 'gmake'
+          gnumake.jobs = 2
+          gnumake.targets 'clean','install'
+          gnumake.buildCmdArgs()
+
+        expect:
+          gnumake.cmdArgs.join(' ') == '-k gmake -j 2 clean install'
+    }
+
+    def "Monitor input sources and output folders"() {
+        given:
+        File srcDir = new File('src').absoluteFile
+        File propsFile = new File('src/main/resources/META-INF/gradle-plugins/org.ysb33r.gnumake.properties').absoluteFile
+        File outDir = new File(project.buildDir,'foo')
+
+        project.allprojects {
+
+            make {
+                makeInputs {
+                    dir srcDir
+                }
+                makeOutputs {
+                    dir outDir
+                }
+            }
+        }
+
+        project.evaluate()
+
+        expect: 'Files to be added to inputs and outputs'
+        !project.tasks.make.inputs.files.isEmpty()
+        project.tasks.make.inputs.files.files.contains(propsFile)
+        !project.tasks.make.outputs.files.isEmpty()
+
+    }
 }
 
