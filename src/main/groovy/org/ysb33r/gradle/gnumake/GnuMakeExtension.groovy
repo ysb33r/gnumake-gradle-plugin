@@ -15,8 +15,6 @@
 
 package org.ysb33r.gradle.gnumake
 
-import groovy.transform.PackageScope
-import groovy.transform.TupleConstructor
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.util.CollectionUtils
@@ -28,7 +26,15 @@ import org.gradle.util.CollectionUtils
 class GnuMakeExtension {
 
     String executable = 'make'
-    String makefile = 'Makefile'
+    String makefile
+
+    void executable(final String exe ) {
+        this.executable=exe
+    }
+
+    void makefile(final String mfile ) {
+        this.makefile = mfile
+    }
 
     GnuMakeExtension(Project p) {
         project = p
@@ -55,10 +61,10 @@ class GnuMakeExtension {
     }
 
     /** Arguments that will be added to make invocations.
-     * These arguments added to the frontt of the GnuMakeBuild tasks
+     * These arguments added to the front of the GnuMakeBuild tasks
      * arguments i.e. directly following the executable when run.
      * This is the recommended approach when running some kind of environment
-     * preparation i.e
+     * preparation i.e runnign another tool which invokes make
      *
      * @code
      * gnumake {
@@ -72,6 +78,9 @@ class GnuMakeExtension {
         this.args.addAll(args as List)
     }
 
+    /** Default flags that are applied to all {#code GnuMakeBuild} tasks.
+     *
+     */
     Map defaultFlags = [:]
 
     private List<Object> args = []
