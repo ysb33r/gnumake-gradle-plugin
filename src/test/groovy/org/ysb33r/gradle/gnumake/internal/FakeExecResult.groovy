@@ -11,26 +11,16 @@
 //
 // ============================================================================
 //
+package org.ysb33r.gradle.gnumake.internal
 
-
-package org.ysb33r.gradle.gnumake
-
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-
+import org.gradle.process.ExecResult
+import org.gradle.process.internal.ExecException
 
 /**
- * Created by schalkc on 01/01/15.
+ * @author Schalk W. Cronjé
  */
-class GnuMakePlugin implements Plugin<Project> {
-    void apply(Project project) {
-
-        project.extensions.create('gnumake', GnuMakeExtension, project)
-        project.tasks.create( 'make', GnuMakeBuild ).configure {
-            description "Runs a GNU Make process"
-            group "GNU Make tasks"
-        }
-
-    }
-
+class FakeExecResult implements ExecResult {
+    int getExitValue() { 0 }
+    ExecResult assertNormalExitValue() throws ExecException { null }
+    ExecResult rethrowFailure() throws ExecException { null }
 }

@@ -26,7 +26,10 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.process.ExecResult
 import org.gradle.util.CollectionUtils
+import org.ysb33r.gradle.gnumake.internal.Executor
 import org.ysb33r.gradle.gnumake.internal.InputOutputMonitor
+import org.ysb33r.gradle.gnumake.internal.MakeExecutor
+import org.ysb33r.gradle.gnumake.internal.Rules
 
 /**
  * A wrapper task for calling GNU Make. This is useful for migrating legacy builds
@@ -37,6 +40,10 @@ import org.ysb33r.gradle.gnumake.internal.InputOutputMonitor
  */
 @CompileStatic
 class GnuMakeBuild extends DefaultTask {
+
+    GnuMakeBuild() {
+        Rules.addRule(project,name)
+    }
 
     /** Indicates whether default flags should be inherited from the {@code gnumake} extension.
      * Default is {@code true}
@@ -344,19 +351,11 @@ class GnuMakeBuild extends DefaultTask {
     @CompileDynamic
     void exec() {
 
-        buildCmdArgs()
-        File wd = getWorkingDir()
-
-        execResult = project.exec {
-
-            executable = this.getExecutable()
-
-            if (wd) {
-                workingDir = wd
-            }
-
-            args = cmdargs
+        if(!executor) {
+            executor = new MakeExecutor(project)
         }
+        buildCmdArgs()
+        execResult = executor.runMake(executable,cmdArgs,getWorkingDir())
     }
 
     @Deprecated
@@ -436,4 +435,6 @@ class GnuMakeBuild extends DefaultTask {
     private List<String> cmdargs = []
     private InputOutputMonitor inMonitor = new InputOutputMonitor(this,'inputs')
     private InputOutputMonitor outMonitor = new InputOutputMonitor(this,'outputs')
+
+    Executor executor
 }

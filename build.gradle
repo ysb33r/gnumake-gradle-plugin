@@ -14,11 +14,17 @@ buildscript {
     repositories {
         jcenter()
 	    mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'org.ysb33r.gradle:bintray:1.5'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.0.1'
-        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
+        // TODO: Re-enable licensing plugin after issue #67 is fixed
+        // See: https://github.com/hierynomus/license-gradle-plugin/issues/67
+//        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
     }
 }
 
@@ -26,7 +32,10 @@ apply plugin : 'org.ysb33r.bintray'
 apply plugin : 'groovy'
 apply plugin : 'maven'
 apply plugin : 'com.jfrog.artifactory'
-apply plugin : 'com.github.hierynomus.license'
+apply plugin : 'com.gradle.plugin-publish'
+// TODO: Re-enable after issue #67 fixed.
+//apply plugin : 'com.github.hierynomus.license'
+
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
 version = '1.0-SNAPSHOT'
@@ -51,7 +60,6 @@ dependencies {
         exclude module : 'groovy-all'
     }
 }
-
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -111,13 +119,39 @@ uploadArchives  {
     onlyIf { !version.endsWith("SNAPSHOT") }
 }
 
-license {
-    header = rootProject.file('config/HEADER')
-    strictCheck = true
-    ignoreFailures = false
-    mapping {
-        groovy ='DOUBLESLASH_STYLE'
+pluginBundle {
+    description = 'This is a plugin for Gradle that allows invoking GNU Make builds'
+    website     = 'https://github.com/ysb33r/gnumake-gradle-plugin'
+    vcsUrl      = 'https://github.com/ysb33r/gnumake-gradle-plugin.git'
+
+    tags = ['GNU','gmake','make','gnumake']
+
+    plugins {
+        gnumakePlugin {
+            id = 'org.ysb33r.gnumake'
+            displayName = 'Gradle GNU Make plugin'
+        }
     }
-    ext.year = '2013-2015'
-    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
+
+    mavenCoordinates {
+        groupId = project.group
+        artifactId = 'gnumake'
+    }
+
+//    onlyIf { !version.endsWith("SNAPSHOT") }
 }
+
+publishPlugins {
+    onlyIf { !version.endsWith("SNAPSHOT") }
+}
+
+//license {
+//    header = rootProject.file('config/HEADER')
+//    strictCheck = true
+//    ignoreFailures = false
+//    mapping {
+//        groovy ='DOUBLESLASH_STYLE'
+//    }
+//    ext.year = '2013-2015'
+//    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
+//}

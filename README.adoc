@@ -8,11 +8,13 @@ the *switches* property.
 
 == Previous versions of this document
 
+* 0.3 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_3/README.md
 * 0.2 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_2/README.md
 * 0.0.9 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/0.0.9_RELEASE/README.md
 
 == Known compatibility
 
+* 1.0 - Gradle 2.0
 * 0.3 - Gradle 2.0
 * 0.2 - Gradle 2.0
 * 0.1 - Gradle 1.12
@@ -20,8 +22,33 @@ the *switches* property.
 * 0.0.3 - Gradle 1.6
 * 0.0.2 - Gradle 1.6
 
+==
+
+[source,groovy]
+----
+buildscript {
+  repositories {
+	jcenter()
+  }
+  dependencies {
+    classpath 'org.ysb33r.gradle:gnumake:1.0'
+  }
+}
+
+apply plugin : 'org.ysb33r.gnumake'
+----
+
+or if you use Gradle 2.1+
+
+[source,groovy]
+----
+plugins {
+  id "org.ysb33r.gnumake" version "1.0"
+}
+----
 
 == Supported Attributes
+
 The following attributes are supported:
 
 [cols="4*"]
