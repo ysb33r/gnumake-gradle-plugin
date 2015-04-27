@@ -11,7 +11,6 @@
 //
 // ============================================================================
 //
-package org.ysb33r.gradle.gnumake.internal
 
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
