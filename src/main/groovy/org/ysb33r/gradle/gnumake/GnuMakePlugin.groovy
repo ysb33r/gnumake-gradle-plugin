@@ -25,7 +25,7 @@ import org.gradle.api.Project
 class GnuMakePlugin implements Plugin<Project> {
     void apply(Project project) {
 
-        project.extensions.create('gnumake', GnuMakeExtension, project)
+        project.extensions.create(GnuMakeExtension.EXTENSION_NAME, GnuMakeExtension, project)
         project.tasks.create( 'make', GnuMakeBuild ).configure {
             description "Runs a GNU Make process"
             group "GNU Make tasks"

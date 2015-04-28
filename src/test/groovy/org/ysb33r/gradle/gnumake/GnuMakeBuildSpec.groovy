@@ -12,6 +12,7 @@
 // ============================================================================
 //
 
+import org.ysb33r.gradle.gnumake.internal.FakeExecutor
 import spock.lang.*
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
 import org.gradle.api.Project
@@ -160,7 +161,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
         expect:
             gnumake.cmdArgs.size() == 2
             gnumake.cmdArgs[0] == '-C'
-            gnumake.cmdArgs[1] == "./change/here"
+            gnumake.cmdArgs[1] == project.file('./change/here').absolutePath
 
     }
 
@@ -176,7 +177,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
           gnumake.cmdArgs[2] == '-I'
           gnumake.cmdArgs[3] == project.file('../FileObjectDir').toString()
           gnumake.cmdArgs[4] == '-I'
-          gnumake.cmdArgs[5] == '/absolutePath'
+          gnumake.cmdArgs[5] == project.file('/absolutePath').toString()
 
     }
 
@@ -274,7 +275,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
             gnumake.dir  '/path/to/somewhere'
 
         expect:
-            gnumake.chDir == new File('/path/to/somewhere')
+            gnumake.chDir == project.file('/path/to/somewhere')
             systemOut.toString().contains('deprecated')
     }
 
@@ -284,7 +285,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
             gnumake.chDir '/path/to/somewhere'
 
         expect:
-            gnumake.dir == new File('/path/to/somewhere')
+            gnumake.dir == project.file('/path/to/somewhere')
             systemOut.toString().contains('deprecated')
     }
 
@@ -298,6 +299,23 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
 
         expect:
           gnumake.cmdArgs.join(' ') == '-k gmake -j 2 clean install'
+    }
+
+    def "It is not necessary to set makefile"() {
+        given:
+        project.allprojects {
+            make {
+                executable 'foo'
+                targets 'clean'
+            }
+        }
+
+        project.tasks.make.executor = new FakeExecutor()
+        project.evaluate()
+        project.tasks.make.execute()
+
+        expect:
+        project.tasks.make.didWork
     }
 
     def "Monitor input sources and output folders"() {

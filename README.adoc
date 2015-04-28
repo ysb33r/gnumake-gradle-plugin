@@ -108,7 +108,8 @@ make {
   ignoreErrors = false // <3>
   keepGoing = false // <4>
   jobs = 1 // <5>
-  defaultFlags = true // <6>
+  noDefaultFlags = false // <6>
+  noExecArgs = false // <7>
 
 }
 ----
@@ -118,6 +119,7 @@ make {
 <4> Equivalent of `-k`
 <5> Equivalent of `-j`
 <6> Determine inheritance of `gnumake.defaultFlags`.
+<7> Determine inheritance of `gnumake.execArgs`
 
 Others can be set by a more declaritive style, but can be reset if necessary if need be. It is
 recommended to use the declaritive style as it makes for easy appending of entities and will
