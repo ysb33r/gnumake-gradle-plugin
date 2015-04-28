@@ -30,6 +30,7 @@ import org.ysb33r.gradle.gnumake.internal.Executor
 import org.ysb33r.gradle.gnumake.internal.InputOutputMonitor
 import org.ysb33r.gradle.gnumake.internal.MakeExecutor
 import org.ysb33r.gradle.gnumake.internal.Rules
+import org.ysb33r.gradle.gnumake.internal.TaskUtils
 
 /**
  * A wrapper task for calling GNU Make. This is useful for migrating legacy builds
@@ -45,18 +46,10 @@ class GnuMakeBuild extends DefaultTask {
         Rules.addRule(project,name)
     }
 
-    /** Indicates whether default flags should be inherited from the {@code gnumake} extension.
-     * Default is {@code true}
-     * @since 1.0
-     */
-    @Input
-    boolean defaultFlags = true
-
     /** Force targets to be rebuilt, even if they are already up to date
      * This is equivalent of passing -B to make
      */
     @Input
-    @Optional
     boolean alwaysMake = false
 
     /** Tell make that varibales from the environment takes precedence over variables defined
@@ -64,29 +57,39 @@ class GnuMakeBuild extends DefaultTask {
      * This is equivalent of passing -e to make
      */
     @Input
-    @Optional
     boolean environmentOverrides = false
 
     /** Tell make to ignore all errors in commands executed to remake files.
-     * This is equivalant to passing -i to make
+     * This is equivalent to passing -i to make
      */
     @Input
-    @Optional
     boolean ignoreErrors = false
 
     /** Set make concurrency level.
      * This is equivalent of passing -j to make.
      */
     @Input
-    @Optional
     Integer jobs = 1
 
     /** Tell make to carry on as far as possible after errors.
      * This is equivalant to passing -k to make
      */
     @Input
-    @Optional
     boolean keepGoing = false
+
+    /** Indicates whether default flags should not be inherited from the {@code gnumake} extension.
+     * Default is {@code false}
+     * @since 1.0
+     */
+    @Input
+    boolean noDefaultFlags = false
+
+    /** If set to {@code true} then {@code gnumake.execArgs} are not inherited.
+     * Default is to inherit.
+     * @since 1.0
+     */
+    @Input
+    boolean noExecArgs = false
 
 
     /** List of targets to execute
@@ -125,8 +128,8 @@ class GnuMakeBuild extends DefaultTask {
     @Optional
     @CompileDynamic
     Map getFlags() {
-        if( defaultFlags && project.extensions.findByName('gnumake') ) {
-            project.gnumake.defaultFlags + this.flags
+        if( !noDefaultFlags && project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME) ) {
+            project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME).defaultFlags + this.flags
         } else {
             this.flags
         }
@@ -188,7 +191,7 @@ class GnuMakeBuild extends DefaultTask {
     @Input
     @CompileDynamic
     String getExecutable() {
-        this.executable ?: project.extensions.getByName('gnumake').executable
+        this.executable ?: project.extensions.getByName(GnuMakeExtension.EXTENSION_NAME)?.executable
     }
 
     /** The make executable.
@@ -258,11 +261,14 @@ class GnuMakeBuild extends DefaultTask {
     /** Makefile to use. If not supplied will resort to the default behaviour of make,
      * which is usually to look for a file called Makefile or GNUMakefile.
      * This is the equivalent of passing -f to make.
+     *
+     * @return Returns the makefile or null
      */
     @Input
+    @Optional
     @CompileDynamic
     String getMakefile() {
-        this.makefile ?: project.extensions.getByName('gnumake').makefile
+        this.makefile ?: project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME)?.makefile
     }
 
     /** Makefile to use. If not supplied will resort to the default behaviour of make,
@@ -355,7 +361,7 @@ class GnuMakeBuild extends DefaultTask {
             executor = new MakeExecutor(project)
         }
         buildCmdArgs()
-        execResult = executor.runMake(executable,cmdArgs,getWorkingDir())
+        execResult = executor.runMake(getExecutable(),cmdArgs,getWorkingDir())
     }
 
     @Deprecated
@@ -403,22 +409,7 @@ class GnuMakeBuild extends DefaultTask {
     @CompileDynamic
     @PackageScope
     List<String> buildCmdArgs() {
-
-        cmdargs = project.extensions.getByName('gnumake').execArgs + [
-                [alwaysMake, '-B'],
-                [environmentOverrides, '-e'],
-                [ignoreErrors, '-i'],
-                [keepGoing, '-k'],
-                [jobs > 1, '-j', jobs as String],
-                [makefile, '-f', "${makefile.toString()}"],
-                [chDir, '-C', "${chDir.toString()}"],
-
-        ].collectMany { it.head() ? it.tail() : [] } +
-
-                (getIncludeDirs().files.collectMany { ['-I', "${it.toString()}"] }) +
-                targets +
-                flags.collect { k, v -> "$k=$v" } +
-                switches
+        cmdargs = TaskUtils.buildCmdArgs(project,this,targets)
     }
 
 
