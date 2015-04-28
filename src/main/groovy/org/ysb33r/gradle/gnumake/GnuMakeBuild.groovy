@@ -409,21 +409,6 @@ class GnuMakeBuild extends DefaultTask {
     @PackageScope
     List<String> buildCmdArgs() {
         cmdargs = TaskUtils.buildCmdArgs(project,this,targets)
-//        cmdargs = project.extensions.getByName(GnuMakeExtension.EXTENSION_NAME).execArgs + [
-//                [alwaysMake, '-B'],
-//                [environmentOverrides, '-e'],
-//                [ignoreErrors, '-i'],
-//                [keepGoing, '-k'],
-//                [jobs > 1, '-j', jobs as String],
-//                [makefile, '-f', "${makefile.toString()}"],
-//                [chDir, '-C', "${chDir.toString()}"],
-//
-//        ].collectMany { it.head() ? it.tail() : [] } +
-//
-//                (getIncludeDirs().files.collectMany { ['-I', "${it.toString()}"] }) +
-//                targets +
-//                flags.collect { k, v -> "$k=$v" } +
-//                switches
     }
 
 
