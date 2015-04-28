@@ -46,13 +46,6 @@ class GnuMakeBuild extends DefaultTask {
         Rules.addRule(project,name)
     }
 
-    /** Indicates whether default flags should be inherited from the {@code gnumake} extension.
-     * Default is {@code true}
-     * @since 1.0
-     */
-    @Input
-    boolean defaultFlags = true
-
     /** Force targets to be rebuilt, even if they are already up to date
      * This is equivalent of passing -B to make
      */
@@ -84,8 +77,16 @@ class GnuMakeBuild extends DefaultTask {
     @Input
     boolean keepGoing = false
 
+    /** Indicates whether default flags should not be inherited from the {@code gnumake} extension.
+     * Default is {@code false}
+     * @since 1.0
+     */
+    @Input
+    boolean noDefaultFlags = false
+
     /** If set to {@code true} then {@code gnumake.execArgs} are not inherited.
      * Default is to inherit.
+     * @since 1.0
      */
     @Input
     boolean noExecArgs = false
@@ -127,8 +128,8 @@ class GnuMakeBuild extends DefaultTask {
     @Optional
     @CompileDynamic
     Map getFlags() {
-        if( defaultFlags && project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME) ) {
-            project.gnumake.defaultFlags + this.flags
+        if( !noDefaultFlags && project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME) ) {
+            project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME).defaultFlags + this.flags
         } else {
             this.flags
         }
