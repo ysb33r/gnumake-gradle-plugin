@@ -25,6 +25,8 @@ import org.gradle.util.CollectionUtils
  */
 class GnuMakeExtension {
 
+    static final String EXTENSION_NAME = 'gnumake'
+
     String executable = 'make'
     String makefile
 

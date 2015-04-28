@@ -12,6 +12,7 @@
 // ============================================================================
 //
 
+import org.ysb33r.gradle.gnumake.internal.FakeExecutor
 import spock.lang.*
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
 import org.gradle.api.Project
@@ -160,7 +161,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
         expect:
             gnumake.cmdArgs.size() == 2
             gnumake.cmdArgs[0] == '-C'
-            gnumake.cmdArgs[1] == "./change/here"
+            gnumake.cmdArgs[1] == project.file('./change/here').absolutePath
 
     }
 
@@ -298,6 +299,23 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
 
         expect:
           gnumake.cmdArgs.join(' ') == '-k gmake -j 2 clean install'
+    }
+
+    def "It is not necessary to set makefile"() {
+        given:
+        project.allprojects {
+            make {
+                executable 'foo'
+                targets 'clean'
+            }
+        }
+
+        project.tasks.make.executor = new FakeExecutor()
+        project.evaluate()
+        project.tasks.make.execute()
+
+        expect:
+        project.tasks.make.didWork
     }
 
     def "Monitor input sources and output folders"() {

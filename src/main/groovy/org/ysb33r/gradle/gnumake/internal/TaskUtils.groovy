@@ -12,9 +12,12 @@
 // ============================================================================
 //
 
+package org.ysb33r.gradle.gnumake.internal
+
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
+import org.ysb33r.gradle.gnumake.GnuMakeExtension
 
 /**
  * @author Schalk W. Cronjé
@@ -22,7 +25,13 @@ import org.ysb33r.gradle.gnumake.GnuMakeBuild
 class TaskUtils {
     static List<String> buildCmdArgs(Project project,GnuMakeBuild task,List<String> targets) {
 
-        project.extensions.getByName('gnumake').execArgs + [
+        List<String> execArgs = []
+
+        if (!task.noExecArgs) {
+            execArgs = project.extensions.findByName(GnuMakeExtension.EXTENSION_NAME)?.execArgs ?: []
+        }
+
+        def switches = [
             [task.alwaysMake, '-B'],
             [task.environmentOverrides, '-e'],
             [task.ignoreErrors, '-i'],
@@ -30,12 +39,13 @@ class TaskUtils {
             [task.jobs > 1, '-j', task.jobs.toString()],
             [task.makefile, '-f', "${task.makefile.toString()}"],
             [task.chDir, '-C', "${task.chDir?.absolutePath}" ],
-        ].collectMany { it.head() ? it.tail() : [] } +
+        ].collectMany { it.head() ? it.tail() : [] }
 
-            (task.includeDirs.files.collectMany { ['-I', "${it.absolutePath}"] }) +
-            targets +
-            task.flags.collect { k, v -> "$k=$v" } +
-            task.switches
+        def includes = (task.includeDirs.files.collectMany { ['-I', "${it.absolutePath}"] })
+
+        def flags = task.flags.collect { k, v -> "$k=$v" }
+
+        execArgs + switches  + includes + targets + flags + task.switches
     }
 
     static ExecResult runMake(Project project,final String exec,final List<String> cmdargs,final File wd=null) {
