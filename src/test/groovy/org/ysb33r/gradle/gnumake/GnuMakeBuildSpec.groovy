@@ -177,7 +177,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
           gnumake.cmdArgs[2] == '-I'
           gnumake.cmdArgs[3] == project.file('../FileObjectDir').toString()
           gnumake.cmdArgs[4] == '-I'
-          gnumake.cmdArgs[5] == '/absolutePath'
+          gnumake.cmdArgs[5] == project.file('/absolutePath').toString()
 
     }
 
@@ -275,7 +275,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
             gnumake.dir  '/path/to/somewhere'
 
         expect:
-            gnumake.chDir == new File('/path/to/somewhere')
+            gnumake.chDir == project.file('/path/to/somewhere')
             systemOut.toString().contains('deprecated')
     }
 
@@ -285,7 +285,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
             gnumake.chDir '/path/to/somewhere'
 
         expect:
-            gnumake.dir == new File('/path/to/somewhere')
+            gnumake.dir == project.file('/path/to/somewhere')
             systemOut.toString().contains('deprecated')
     }
 

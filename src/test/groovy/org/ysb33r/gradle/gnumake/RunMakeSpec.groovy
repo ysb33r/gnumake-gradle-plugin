@@ -55,6 +55,6 @@ class RunMakeSpec extends Specification {
         String output = systemOut.toString()
 
         expect:
-            output.contains('fake-make build install DESTDIR=foo/bar')
+            output.contains('fake-make build install DESTDIR=foo/bar') || output.contains('fake-make.bat build install DESTDIR=foo/bar')
     }
 }
