@@ -97,6 +97,7 @@ class GnuMakeBuild extends DefaultTask {
      */
     @Input
     @Optional
+    @CompileDynamic
     List<String> getTargets() {
         CollectionUtils.stringize(this.targets)
     }
@@ -162,6 +163,7 @@ class GnuMakeBuild extends DefaultTask {
      * on the GnuMake class.
      */
     @Input
+    @CompileDynamic
     @Optional
     List<String> getSwitches() {
         CollectionUtils.stringize(this.switches)

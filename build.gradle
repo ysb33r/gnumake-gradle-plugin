@@ -22,6 +22,7 @@ buildscript {
         classpath 'org.ysb33r.gradle:bintray:1.5'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
+        classpath 'org.ysb33r.gradle:gradletest:0.5'
 
         // See: https://github.com/hierynomus/license-gradle-plugin/issues/67
         classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0', {
@@ -36,10 +37,11 @@ apply plugin : 'maven'
 apply plugin : 'com.jfrog.artifactory'
 apply plugin : 'com.gradle.plugin-publish'
 apply plugin : 'com.github.hierynomus.license'
+apply plugin : 'org.ysb33r.gradletest'
 
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
-version = '1.0'
+version = '1.0.1'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -154,4 +156,12 @@ license {
     }
     ext.year = '2013-2015'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
+}
+
+gradleLocations {
+    downloadToGradleUserHome = true
+}
+
+gradleTest {
+    versions '2.0','2.2','2.3'
 }
