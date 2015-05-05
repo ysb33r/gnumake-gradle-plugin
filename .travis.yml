@@ -1,7 +1,7 @@
 language: groovy
 
 install:
- - ./gradlew clean assemble -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
+ - ./gradlew clean -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
 
 script:
  - ./gradlew build gradleTest -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
