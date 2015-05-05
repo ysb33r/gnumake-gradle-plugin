@@ -1,9 +1,13 @@
 language: groovy
-script: ./gradlew -S clean build  -PbintrayUserName= -PbintrayApiKey --info
+
+script:
+ - ./gradlew clean -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
+ - ./gradlew build gradleTest -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
 jdk:
  - oraclejdk7
  - oraclejdk8
  - openjdk7
+ - openjdk6
 os:
  - linux
  - osx
