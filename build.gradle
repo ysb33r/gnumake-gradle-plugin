@@ -22,7 +22,7 @@ buildscript {
         classpath 'org.ysb33r.gradle:bintray:1.5'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
-        classpath 'org.ysb33r.gradle:gradletest:0.5'
+        classpath 'org.ysb33r.gradle:gradletest:0.5.1'
 
         // See: https://github.com/hierynomus/license-gradle-plugin/issues/67
         classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0', {
@@ -163,5 +163,5 @@ gradleLocations {
 }
 
 gradleTest {
-    versions '2.0','2.2','2.3'
+    versions '2.0','2.2','2.4'
 }
