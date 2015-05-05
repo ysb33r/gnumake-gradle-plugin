@@ -1,6 +1,11 @@
+language: groovy
+
+install:
+ - ./gradlew clean assemble -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
+
 script:
- - ./gradlew clean -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
  - ./gradlew build gradleTest -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
+
 jdk:
  - oraclejdk7
  - oraclejdk8
