@@ -1,5 +1,3 @@
-language: groovy
-
 script:
  - ./gradlew clean -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
  - ./gradlew build gradleTest -PbintrayUserName= -PbintrayApiKey --info --gradle-user-home=$(pwd)/../gradleHome
