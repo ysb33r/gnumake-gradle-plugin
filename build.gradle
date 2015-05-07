@@ -41,7 +41,7 @@ apply plugin : 'org.ysb33r.gradletest'
 
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
-version = '1.0.1'
+version = '1.0.2-SNAPSHOT'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6

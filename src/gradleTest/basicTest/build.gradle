@@ -12,6 +12,10 @@ gnumake {
     executable "${projectDir}/${OperatingSystem.current().isWindows() ? 'make.bat' : 'make.sh'}"
 }
 
+make {
+    environment foo : 'bar'
+}
+
 task runGradleTest {
     dependsOn makeClean
 }

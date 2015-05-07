@@ -41,14 +41,16 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
         systemOut = null
     }
 
-    def "Newly created Task will set executable to OS-specific value"() {
-        expect:
-        gnumake.executable == 'make'
-    }
+    def "Defaults on newly created Task"() {
 
-    def "Newly created Task will have empty command line"() {
-        expect:
+        expect: 'executable to OS-specific value'
+        gnumake.executable == 'make'
+
+        and: 'empty command line'
         gnumake.cmdArgs.size() == 0
+
+        and: 'no additional environment'
+        gnumake.environment == null
     }
 
     def "alwaysMake adds -B" () {
@@ -342,7 +344,23 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
         !project.tasks.make.inputs.files.isEmpty()
         project.tasks.make.inputs.files.files.contains(propsFile)
         !project.tasks.make.outputs.files.isEmpty()
+    }
 
+    def "Modifying the environment"() {
+        given:
+        project.allprojects {
+            make {
+                environment INCDIR : '/foo/path'
+                environment LIBDIR : '/foo/lib'
+            }
+        }
+        project.evaluate()
+        def env = project.tasks.make.environment
+
+        expect:
+        env.size() == 2
+        env.INCDIR == '/foo/path'
+        env.LIBDIR == '/foo/lib'
     }
 }
 

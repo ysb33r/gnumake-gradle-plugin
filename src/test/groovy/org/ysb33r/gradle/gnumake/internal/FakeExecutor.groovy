@@ -26,11 +26,13 @@ class FakeExecutor implements Executor {
     String executable
     List<String> cmdargs
     File workingDir
+    Map environment
 
-    ExecResult runMake(String exec, List<String> cmdargs, File wd) {
+    ExecResult runMake(String exec, List<String> cmdargs, File wd,Map env) {
         this.executable = exec
         this.cmdargs = cmdargs
         this.workingDir = wd
+        this.environment = env
         return new FakeExecResult()
     }
 }

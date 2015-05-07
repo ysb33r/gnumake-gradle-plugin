@@ -56,7 +56,7 @@ class TrackerTask extends DefaultTask {
             executor = new MakeExecutor(project)
         }
         def cmdargs = TaskUtils.buildCmdArgs(project,tracks,[target])
-        execResult = executor.runMake(tracks.executable,cmdargs,tracks.workingDir)
+        execResult = executor.runMake(tracks.executable,cmdargs,tracks.workingDir,tracks.environment)
 
     }
 

@@ -14,3 +14,4 @@
 #
 
 echo fake-make $@
+env

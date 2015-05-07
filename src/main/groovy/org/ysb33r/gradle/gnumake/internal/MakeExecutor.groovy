@@ -25,7 +25,7 @@ import org.gradle.process.ExecResult
 class MakeExecutor implements Executor {
     Project project
 
-    ExecResult runMake(final String exec,final List<String> cmdargs,final File wd=null) {
-        TaskUtils.runMake(project,exec,cmdargs,wd)
+    ExecResult runMake(final String exec,final List<String> cmdargs,final File wd=null,final Map environment=null) {
+        TaskUtils.runMake(project,exec,cmdargs,wd,environment)
     }
 }

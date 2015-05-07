@@ -48,13 +48,17 @@ class TaskUtils {
         execArgs + switches  + includes + targets + flags + task.switches
     }
 
-    static ExecResult runMake(Project project,final String exec,final List<String> cmdargs,final File wd=null) {
+    static ExecResult runMake(Project project,final String exec,final List<String> cmdargs,final File wd=null,Map env = null) {
         project.exec {
 
             executable = exec
 
             if (wd) {
                 workingDir = wd
+            }
+
+            if(env) {
+                environment env
             }
 
             args = cmdargs

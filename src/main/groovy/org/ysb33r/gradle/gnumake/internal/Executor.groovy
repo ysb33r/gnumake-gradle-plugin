@@ -21,5 +21,5 @@ import org.gradle.process.ExecResult
  * @author Schalk W. Cronjé
  */
 interface Executor {
-    ExecResult runMake(final String exec,final List<String> cmdargs,final File wd)
+    ExecResult runMake(final String exec,final List<String> cmdargs,final File wd,final Map environment)
 }

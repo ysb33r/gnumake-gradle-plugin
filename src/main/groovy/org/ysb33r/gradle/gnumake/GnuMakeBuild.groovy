@@ -52,7 +52,7 @@ class GnuMakeBuild extends DefaultTask {
     @Input
     boolean alwaysMake = false
 
-    /** Tell make that varibales from the environment takes precedence over variables defined
+    /** Tell make that variables from the environment takes precedence over variables defined
      * inside makefile.
      * This is equivalent of passing -e to make
      */
@@ -154,6 +154,46 @@ class GnuMakeBuild extends DefaultTask {
      */
     void flags(Map a) {
         this.flags+= a
+    }
+
+    /** Returns the map of environment variables that will be added to the environment that make be executed within.
+     *
+     * @return A map of environment variables or null
+     * @since 1.0.2
+     */
+    @Input
+    @Optional
+    @CompileDynamic
+    Map getEnvironment() {
+        this.environment
+    }
+
+    /** Resets the existing environment variables that is to be added to make environment.
+     * @code
+     * setEnvironment INCPATH : '/foo/bar'
+      * @endcode
+     * @since 1.0.2
+     */
+    void setEnvironment(Map a) {
+        if(this.environment != null) {
+            this.environment.clear()
+        } else {
+            this.environment = [:]
+        }
+    }
+
+    /** Appends variables to the make environment.
+     * @code
+     * environment INCPATH : '/foo/bar', LIBPATH : '/lib/path'
+     * @endcode
+     * @since 1.0.2
+     */
+    void environment(Map a) {
+        if(this.environment != null) {
+            this.environment+= a
+        } else {
+            this.environment= a
+        }
     }
 
     /** Arbitrary GNU Make command-line switches to pass. This allows flexibility to
@@ -355,17 +395,6 @@ class GnuMakeBuild extends DefaultTask {
         cmdargs
     }
 
-    @TaskAction
-    @CompileDynamic
-    void exec() {
-
-        if(!executor) {
-            executor = new MakeExecutor(project)
-        }
-        buildCmdArgs()
-        execResult = executor.runMake(getExecutable(),cmdArgs,getWorkingDir())
-    }
-
     @Deprecated
     void setTasks(Object... targets_) {
         logger.warn "'tasks/setTasks' is deprecated. Please use 'targets/setTargets' instead."
@@ -414,6 +443,17 @@ class GnuMakeBuild extends DefaultTask {
         cmdargs = TaskUtils.buildCmdArgs(project,this,targets)
     }
 
+    @TaskAction
+    @CompileDynamic
+    void exec() {
+
+        if(!executor) {
+            executor = new MakeExecutor(project)
+        }
+        buildCmdArgs()
+        execResult = executor.runMake(getExecutable(),cmdArgs,getWorkingDir(),environment)
+    }
+
 
 
     private String executable
@@ -428,6 +468,7 @@ class GnuMakeBuild extends DefaultTask {
     private List<String> cmdargs = []
     private InputOutputMonitor inMonitor = new InputOutputMonitor(this,'inputs')
     private InputOutputMonitor outMonitor = new InputOutputMonitor(this,'outputs')
+    private Map environment
 
     Executor executor
 }
