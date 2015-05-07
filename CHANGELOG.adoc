@@ -1,0 +1,36 @@
+= CHANGELOG
+
+== Version 1.0.2
+
+=== Bugs
+* https://github.com/ysb33r/gnumake-gradle-plugin/issues/4[#4] Environments can now be set for `GnuMakeBuild` tasks.  
+
+== Version 1.0.1
+
+=== Bugs
+* https://github.com/ysb33r/gnumake-gradle-plugin/issues/3[#3] Fixed Gradle 2.2+ incompatibility
+
+=== Other
+* Now using https://github.com/ysb33r/gradleTest[gradleTest plugin] to test Gradle version compatibility.
+
+== Version 1.0
+
+=== Features
+
+* A default task called `make` is added when the plugin is applied.
+* Add file monitors for input or output so that Gradle will known when to run the `make` tasks
+* DSL improvements
+* Add rules such that `gradle makeClean` will run `make clean`
+* If you do `:a:b:c:makeClean` Gradle will execute the `make` task in `a/b/c`.
+* If no Makefile is provided, make will use startand rules to look for a Makefile.
+
+== Version 0.3
+
+=== Features
+* Add `gnumake` extension
+
+== Version 0.2
+* Change plugin id to `org.ysb33r.gnumake`
+
+==  Version 0.1
+* Initial release
