@@ -19,6 +19,7 @@ package org.ysb33r.gradle.gnumake
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.transform.PackageScope
+import groovy.transform.TypeChecked
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
@@ -97,6 +98,8 @@ class GnuMakeBuild extends DefaultTask {
      */
     @Input
     @Optional
+    @TypeChecked
+    @CompileDynamic
     List<String> getTargets() {
         CollectionUtils.stringize(this.targets)
     }
@@ -163,6 +166,8 @@ class GnuMakeBuild extends DefaultTask {
      */
     @Input
     @Optional
+    @TypeChecked
+    @CompileDynamic
     List<String> getSwitches() {
         CollectionUtils.stringize(this.switches)
     }

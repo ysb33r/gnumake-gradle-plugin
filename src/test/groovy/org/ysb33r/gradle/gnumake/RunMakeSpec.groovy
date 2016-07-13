@@ -15,6 +15,7 @@
 package org.ysb33r.gradle.gnumake
 
 import org.gradle.api.Project
+import org.gradle.api.logging.LogLevel
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -27,9 +28,6 @@ class RunMakeSpec extends Specification {
 
     static final File MAKESCRIPT = new File( "src/test/resources/fake-make-scripts/${OperatingSystem.current().isWindows() ? 'fake-make.bat' : 'fake-make.sh'}" )
     Project project = ProjectBuilder.builder().build()
-
-    void captureStdOut() {
-    }
 
 
     def "Check that Make is invoked with the correct arguments"() {
@@ -48,6 +46,8 @@ class RunMakeSpec extends Specification {
                 flags DESTDIR : 'foo/bar'
                 targets 'build','install'
             }
+
+            logging.captureStandardOutput(LogLevel.DEBUG)
         }
 
         project.evaluate()
@@ -55,6 +55,6 @@ class RunMakeSpec extends Specification {
         String output = systemOut.toString()
 
         expect:
-            output.contains('fake-make build install DESTDIR=foo/bar') || output.contains('fake-make.bat build install DESTDIR=foo/bar')
+        output.contains('fake-make build install DESTDIR=foo/bar') || output.contains('fake-make.bat build install DESTDIR=foo/bar')
     }
 }
