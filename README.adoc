@@ -6,63 +6,56 @@ some components utilise GNU make as it build tool. Most common command-line swit
 are supported, but for full flexibiliy it is possible to add any additional switch via 
 the *switches* property.
 
+* Toolchain : GnuMake (configured via `gnumake`)
+* SoftwareComponent : A Makeifle project than can produce on or more components
+* BinaryComponents : Each artifact that is built by the Makefile
+* Binary Tasks
+** cleanXyz : make clean FLAG1=value1 -x
+** buildXyz : make defaultTargets
+
 == Previous versions of this document
 
+* 1.0 ???
 * 0.3 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_3/README.md
 * 0.2 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_2/README.md
 * 0.0.9 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/0.0.9_RELEASE/README.md
 
 == Known compatibility
 
-* 1.0 - Gradle 2.0
-* 0.3 - Gradle 2.0
-* 0.2 - Gradle 2.0
+NOTE: Buildscripts written to versions prior to 2.x are not compatible with the 2.0+. Please read the notes on upgrading
+
+* 2.0 - Gradle 2.10+
+* 1.0 - Gradle 2.0+
+* 0.3 - Gradle 2.0+
+* 0.2 - Gradle 2.0+
 * 0.1 - Gradle 1.12
 * 0.0.9 - Gradle 1.9
 * 0.0.3 - Gradle 1.6
 * 0.0.2 - Gradle 1.6
 
+
 == Adding the plugin
 
 [source,groovy]
 ----
-buildscript {
-  repositories {
-      maven {
-          url "https://plugins.gradle.org/m2/"
-      }
-  }
-  dependencies {
-    classpath 'org.ysb33r.gradle:gnumake:1.0'
-  }
-}
-
-apply plugin : 'org.ysb33r.gnumake'
-----
-
-or if you use Gradle 2.1+
-
-[source,groovy]
-----
 plugins {
-  id 'org.ysb33r.gnumake' version '1.0'
+  id 'org.ysb33r.gnumake' version '2.0'
 }
 ----
 
 == Global configuration
 
-With the release of 1.0 there is a project extension `gnumake`, which allows defaults to be set
-for all `GnuMakeBuild` tasks
+Defaults to be set can be set for all `GnuMakeBuild` tasks in the `gnumake` model space.
 
 [source,groovy]
 ----
-gnumake {
-
-  executable '/path/to/make' // <1>
-  makefile 'Makefile' // <2>
-  execArgs '--server', 'server.com', '/opt/pi/make' // <3>
-  defaultFlags BUILD_NUMBER : System.getenv('BUILD_NUMBER') // <4>
-
+model {
+    gnumake {
+      executable '/path/to/make' // <1>
+      makefile 'Makefile' // <2>
+      execArgs '--server', 'server.com', '/opt/pi/make' // <3>
+      defaultFlags BUILD_NUMBER : System.getenv('BUILD_NUMBER') // <4>
+    }
 }
 ----
 <1> Set the path to the make executable. By default is is 'make' for all platforms,
@@ -84,7 +77,7 @@ by doing
 
 [source,groovy]
 ----
-import org.ysb33r.gradle.gnumake.GnuMakeBuild
+import org.ysb33r.gradle.gnumake.tasks.GnuMakeBuild
 
 task runMake (type:GnuMakeBuild) {
 
@@ -250,5 +243,36 @@ manually added via `inputs` and `outputs`. it is possible that support will be a
 a future release if the community requests it.
 
 
+== Migrating from pre-2.0
 
+=== gnumake extension
 
+The layout is the same, excep tthe `gnumake` block now resides in the `model` block
+
+.Pre-2.0 Global configuration
+[source,groovy]
+----
+gnumake {
+    executable '/path/to/make'
+}
+----
+
+.New model
+----
+model {
+    gnumake {
+      executable '/path/to/make'
+    }
+}
+----
+
+=== Packages
+
+A number of classes have moved. Please update your imports if you had customised builds.
+
+|===
+| Class | New Package | Old Package
+| `GnuMakeBuild` | `org.ysb33r.gradle.gnumake.tasks` | `org,ysb33r.gradle.gnumake`
+| `GnuMakePlugin` | `org.ysb33r.gradle.gnumake.model` | `org,ysb33r.gradle.gnumake`
+| `GnuMakeExtension` | `org.ysb33r.gradle.gnumake.model` | `org,ysb33r.gradle.gnumake`
+|===

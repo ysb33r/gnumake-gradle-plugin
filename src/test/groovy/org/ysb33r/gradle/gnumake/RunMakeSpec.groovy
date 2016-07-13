@@ -17,6 +17,7 @@ package org.ysb33r.gradle.gnumake
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Ignore
 import spock.lang.Specification
 
 
@@ -31,7 +32,7 @@ class RunMakeSpec extends Specification {
     void captureStdOut() {
     }
 
-
+    @Ignore
     def "Check that Make is invoked with the correct arguments"() {
         given:
         def systemOut = new ByteArrayOutputStream()

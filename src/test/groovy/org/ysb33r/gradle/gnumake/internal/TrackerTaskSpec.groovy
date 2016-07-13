@@ -17,6 +17,7 @@ package org.ysb33r.gradle.gnumake.internal
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Ignore
 import spock.lang.Specification
 
 
@@ -32,6 +33,7 @@ class TrackerTaskSpec extends Specification {
         project.apply plugin: 'org.ysb33r.gnumake'
     }
 
+    @Ignore
     def "Creating a GNUMakeBuild task will enable other tasks to track it"() {
         given:
         Task tracker = project.tasks.findByName('makeClean')
@@ -44,6 +46,7 @@ class TrackerTaskSpec extends Specification {
 
     }
 
+    @Ignore
     def "Executing a make clean should invoke job with the correct settings"() {
         given:
         Task tracker = project.tasks.findByName('makeClean')

@@ -16,8 +16,8 @@ package org.ysb33r.gradle.gnumake.internal
 
 import org.gradle.api.Project
 import org.gradle.process.ExecResult
-import org.ysb33r.gradle.gnumake.GnuMakeBuild
-import org.ysb33r.gradle.gnumake.GnuMakeExtension
+import org.ysb33r.gradle.gnumake.tasks.GnuMakeBuild
+import org.ysb33r.gradle.gnumake.model.GnuMakeExtension
 
 /**
  * @author Schalk W. Cronjé

@@ -10,36 +10,39 @@
 //
 // ============================================================================
 
-buildscript {
-    repositories {
-        jcenter()
-	    mavenLocal()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'org.ysb33r.gradle:bintray:1.5'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
-        classpath 'org.ysb33r.gradle:gradletest:0.5.5'
-        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1'
-    }
+//buildscript {
+//    repositories {
+//        jcenter()
+//	    mavenLocal()
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//        }
+//    }
+//    dependencies {
+//        classpath 'org.ysb33r.gradle:bintray:1.5'
+//        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
+//        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
+//        classpath 'org.ysb33r.gradle:gradletest:0.5.5'
+//        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1'
+//    }
+//}
+
+plugins {
+    id 'groovy'
+    id 'org.ysb33r.gradletest' version '0.5.5'
 }
 
-
-
-apply plugin : 'org.ysb33r.bintray'
-apply plugin : 'groovy'
-apply plugin : 'maven'
-apply plugin : 'com.jfrog.artifactory'
-apply plugin : 'com.gradle.plugin-publish'
-apply plugin : 'com.github.hierynomus.license'
-apply plugin : 'org.ysb33r.gradletest'
+//apply plugin : 'org.ysb33r.bintray'
+//apply plugin : 'groovy'
+//apply plugin : 'maven'
+//apply plugin : 'com.jfrog.artifactory'
+//apply plugin : 'com.gradle.plugin-publish'
+//apply plugin : 'com.github.hierynomus.license'
+//apply plugin : 'org.ysb33r.gradletest'
 
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
-version = '1.0.3-SNAPSHOT'
+version = '2.0-SNAPSHOT'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -57,7 +60,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    testCompile ('org.spockframework:spock-core:1.0-groovy-2.3') {
+    testCompile ('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module : 'groovy-all'
     }
 }
@@ -84,83 +87,84 @@ jar {
     }
 }
 
-artifactory {
-    publish {
-        contextUrl = 'http://oss.jfrog.org'
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = project.properties.bintrayUserName
-            password = project.properties.bintrayApiKey
-        }
-    }
-}
-
-artifactoryPublish {
-    onlyIf { version.endsWith("SNAPSHOT") }
-}
-
-uploadArchives  {
-    repositories {
-        bintrayMavenDeployer {
-            username    project.properties.bintrayUserName
-            apiKey      project.properties.bintrayApiKey
-            repoOwner   bintrayOwner
-            repoName    bintrayRepo
-            packageName moduleName
-            description 'This is a plugin for Gradle that allows invoking GNU Make builds'
-            tags        'gradle','GNU','gmake','make','gnumake'
-            licenses          'Apache-2.0'
-            vcsUrl            'https://github.com/ysb33r/Gradle.git'
-            autoCreatePackage true
-            updatePackage     true
-            versionAttributes 'gradle-plugin' : "org.ysb33r.gnumake:${group}:${archivesBaseName}"
-        }
-    }
-
-    onlyIf { !version.endsWith("SNAPSHOT") }
-}
-
-pluginBundle {
-    description = 'This is a plugin for Gradle that allows invoking GNU Make builds'
-    website     = 'https://github.com/ysb33r/gnumake-gradle-plugin'
-    vcsUrl      = 'https://github.com/ysb33r/gnumake-gradle-plugin.git'
-
-    tags = ['GNU','gmake','make','gnumake']
-
-    plugins {
-        gnumakePlugin {
-            id = 'org.ysb33r.gnumake'
-            displayName = 'Gradle GNU Make plugin'
-        }
-    }
-
-    mavenCoordinates {
-        groupId = project.group
-        artifactId = 'gnumake'
-    }
-
-}
-
-publishPlugins {
-    onlyIf { !version.endsWith("SNAPSHOT") }
-}
-
-license {
-    header = rootProject.file('config/HEADER')
-    strictCheck = true
-    ignoreFailures = false
-    mapping {
-        groovy ='DOUBLESLASH_STYLE'
-    }
-    ext.year = '2013-2015'
-    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
-}
+//artifactory {
+//    publish {
+//        contextUrl = 'http://oss.jfrog.org'
+//        repository {
+//            repoKey = 'oss-snapshot-local'
+//            username = project.properties.bintrayUserName
+//            password = project.properties.bintrayApiKey
+//        }
+//    }
+//}
+//
+//artifactoryPublish {
+//    onlyIf { version.endsWith("SNAPSHOT") }
+//}
+//
+//uploadArchives  {
+//    repositories {
+//        bintrayMavenDeployer {
+//            username    project.properties.bintrayUserName
+//            apiKey      project.properties.bintrayApiKey
+//            repoOwner   bintrayOwner
+//            repoName    bintrayRepo
+//            packageName moduleName
+//            description 'This is a plugin for Gradle that allows invoking GNU Make builds'
+//            tags        'gradle','GNU','gmake','make','gnumake'
+//            licenses          'Apache-2.0'
+//            vcsUrl            'https://github.com/ysb33r/Gradle.git'
+//            autoCreatePackage true
+//            updatePackage     true
+//            versionAttributes 'gradle-plugin' : "org.ysb33r.gnumake:${group}:${archivesBaseName}"
+//        }
+//    }
+//
+//    onlyIf { !version.endsWith("SNAPSHOT") }
+//}
+//
+//pluginBundle {
+//    description = 'This is a plugin for Gradle that allows invoking GNU Make builds'
+//    website     = 'https://github.com/ysb33r/gnumake-gradle-plugin'
+//    vcsUrl      = 'https://github.com/ysb33r/gnumake-gradle-plugin.git'
+//
+//    tags = ['GNU','gmake','make','gnumake']
+//
+//    plugins {
+//        gnumakePlugin {
+//            id = 'org.ysb33r.gnumake'
+//            displayName = 'Gradle GNU Make plugin'
+//        }
+//    }
+//
+//    mavenCoordinates {
+//        groupId = project.group
+//        artifactId = 'gnumake'
+//    }
+//
+//}
+//
+//publishPlugins {
+//    onlyIf { !version.endsWith("SNAPSHOT") }
+//}
+//
+//license {
+//    header = rootProject.file('config/HEADER')
+//    strictCheck = true
+//    ignoreFailures = false
+//    mapping {
+//        groovy ='DOUBLESLASH_STYLE'
+//    }
+//    ext.year = '2013-2016'
+//    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
+//}
+//
 
 gradleLocations {
     downloadToGradleUserHome = true
 }
 
 gradleTest {
-    versions '2.0','2.2','2.4','2.8','2.10','2.12'
+    versions '2.10','2.12','2.13'
     dependsOn jar
 }

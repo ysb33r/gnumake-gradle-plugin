@@ -8,15 +8,40 @@ buildscript {
 
 apply plugin : 'org.ysb33r.gnumake'
 
-gnumake {
-    executable "${projectDir}/${OperatingSystem.current().isWindows() ? 'make.bat' : 'make.sh'}"
-}
-
-make {
-    environment foo : 'bar'
-    targets 'fake1','fake2'
-}
+//make {
+//    environment foo : 'bar'
+//    targets 'fake1','fake2'
+//}
 
 task runGradleTest {
-    dependsOn makeClean
+    dependsOn makeClean makeFoo
 }
+
+
+model {
+
+    gnumake {
+        executable "${projectDir}/${OperatingSystem.current().isWindows() ? 'make.bat' : 'make.sh'}"
+        execArgs '-v'
+        defaultFlags foo : 'bar'
+    }
+
+    components {
+        make(GnuMakeSpec) {
+            artifact archive, "${buildDir}/foo.tgz"
+            chDir "${buildDir}"
+
+            makeInputs {
+
+            }
+
+        }
+    }
+//    tasks {
+//        make {
+//            environment foo : 'bar'
+//            targets 'fake1','fake2'
+//        }
+//    }
+}
+

@@ -15,13 +15,11 @@
 package org.ysb33r.gradle.gnumake.internal
 
 import groovy.transform.CompileStatic
-import groovy.transform.PackageScope
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.StopActionException
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecResult
-import org.ysb33r.gradle.gnumake.GnuMakeBuild
+import org.ysb33r.gradle.gnumake.tasks.GnuMakeBuild
 
 /**
  * @author Schalk W. Cronjé

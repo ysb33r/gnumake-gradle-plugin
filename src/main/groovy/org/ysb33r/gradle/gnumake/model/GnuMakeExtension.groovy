@@ -13,7 +13,7 @@
 //
 
 
-package org.ysb33r.gradle.gnumake
+package org.ysb33r.gradle.gnumake.model
 
 import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
@@ -21,11 +21,11 @@ import org.gradle.util.CollectionUtils
 
 /**
  * Created by schalkc on 01/01/15.
- * @since 1.0
+ * @since 2.0
  */
 class GnuMakeExtension {
 
-    static final String EXTENSION_NAME = 'gnumake'
+//    static final String EXTENSION_NAME = 'gnumake'
 
     String executable = 'make'
     String makefile
@@ -37,20 +37,6 @@ class GnuMakeExtension {
     void makefile(final String mfile ) {
         this.makefile = mfile
     }
-
-    GnuMakeExtension(Project p) {
-        project = p
-
-        switch(OperatingSystem.current()) {
-            case OperatingSystem.SOLARIS:
-            case OperatingSystem.FREE_BSD:
-                executable = 'gmake'
-                break;
-            default:
-                executable = 'make'
-        }
-    }
-
 
     /** Arguments that will be added to make invocations.
      *
@@ -86,6 +72,5 @@ class GnuMakeExtension {
     Map defaultFlags = [:]
 
     private List<Object> args = []
-    private Project project
 
 }
