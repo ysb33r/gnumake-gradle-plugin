@@ -45,7 +45,7 @@ or if you use Gradle 2.1+
 [source,groovy]
 ----
 plugins {
-  id 'org.ysb33r.gnumake' version '1.0'
+  id 'org.ysb33r.gnumake' version '1.0.2'
 }
 ----
 
