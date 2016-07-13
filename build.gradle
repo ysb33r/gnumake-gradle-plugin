@@ -173,4 +173,5 @@ license {
     }
     ext.year = '2013-2016'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
+    exclude '**/*CompatibilitySpec.groovy'
 }
