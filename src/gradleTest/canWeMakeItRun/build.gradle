@@ -16,6 +16,7 @@ gnumake {
 make {
     flags DESTDIR : 'foo/bar'
     targets 'build','install'
+    environment foo : 'bar'
 }
 
 task runGradleTest {
