@@ -1,11 +1,5 @@
 import org.gradle.internal.os.OperatingSystem
 
-buildscript {
-    dependencies {
-        classpath 'org.ysb33r.gradle:gnumake:%%VERSION%%'
-    }
-}
-
 apply plugin : 'org.ysb33r.gnumake'
 
 gnumake {
