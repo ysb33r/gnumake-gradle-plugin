@@ -23,7 +23,7 @@ plugins {
 
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
-version = '1.1'
+version = '1.2-SNAPSHOT'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
