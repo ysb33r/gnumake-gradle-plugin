@@ -27,6 +27,8 @@ import spock.lang.Specification
 class RunMakeSpec extends Specification {
 
     static final File MAKESCRIPT = new File( "src/test/resources/fake-make-scripts/${OperatingSystem.current().isWindows() ? 'fake-make.bat' : 'fake-make.sh'}" )
+    static final boolean isWindows = OperatingSystem.current().isWindows()
+    static final String quoteFlag = isWindows ? '"' : ''
     Project project = ProjectBuilder.builder().build()
 
 
@@ -56,7 +58,7 @@ class RunMakeSpec extends Specification {
         String output = systemOut.toString()
 
         expect:
-        output =~ /.*fake-make(\.bat)?\s+build\s+install\s+DESTDIR=foo\/bar.*/
+        output =~ /.*fake-make(\.bat)?\s+build\s+install\s+${quoteFlag}DESTDIR=foo\/bar${quoteFlag}.*/
         output.contains('INCAPATH=PERU')
     }
 }

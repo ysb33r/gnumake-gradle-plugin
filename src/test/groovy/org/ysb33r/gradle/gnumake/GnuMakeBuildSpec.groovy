@@ -25,6 +25,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
     Project project
     def gnumake
     boolean isWindows = OperatingSystem.current().isWindows()
+    String quoteFlag = isWindows ? '"' : ''
 
     void setup() {
         project = ProjectBuilder.builder().build()
@@ -192,8 +193,8 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
 
         expect:
             gnumake.cmdArgs.size() == 2
-            gnumake.cmdArgs.contains( "BUILD_NUMBER=12345${''}" )
-            gnumake.cmdArgs.contains( "DESTDIR=/path/somewhere${''}" )
+            gnumake.cmdArgs.contains( "${quoteFlag}BUILD_NUMBER=12345${quoteFlag}${''}" )
+            gnumake.cmdArgs.contains( "${quoteFlag}DESTDIR=/path/somewhere${quoteFlag}${''}" )
     }
 
     def "arbitrary switches are added at the end"() {
@@ -219,7 +220,7 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
             gnumake.buildCmdArgs()
 
         expect:
-            gnumake.cmdArgs.join(' ') == "-i clean DESTDIR=/path/somewhere -q -n"
+            gnumake.cmdArgs.join(' ') == "-i clean ${quoteFlag}DESTDIR=/path/somewhere${quoteFlag} -q -n"
     }
 
     def "'tasks' is an alias for 'targets', therefore writing tasks, should update targets"() {
