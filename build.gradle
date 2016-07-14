@@ -10,35 +10,6 @@
 //
 // ============================================================================
 
-//buildscript {
-//    repositories {
-//        jcenter()
-//	    mavenLocal()
-//        maven {
-//            url "https://plugins.gradle.org/m2/"
-//        }
-//    }
-//    dependencies {
-//        classpath 'org.ysb33r.gradle:bintray:1.5'
-//        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
-//        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
-//
-//        // See: https://github.com/hierynomus/license-gradle-plugin/issues/67
-//        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0', {
-//            exclude module : 'guava'
-//        }
-//    }
-//}
-
-//apply plugin : 'org.ysb33r.bintray'
-//apply plugin : 'org.ysb33r.gradletest'
-//apply plugin : 'groovy'
-//apply plugin : 'maven'
-//apply plugin : 'com.jfrog.artifactory'
-//apply plugin : 'com.gradle.plugin-publish'
-//apply plugin : 'com.github.hierynomus.license'
-
-
 plugins {
     id 'com.gradle.build-scan' version '1.0'
     id 'groovy'
@@ -174,4 +145,12 @@ license {
     ext.year = '2013-2016'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
     exclude '**/*CompatibilitySpec.groovy'
+}
+
+
+task release {
+    group 'Publication'
+    description 'Build, test & push publications'
+    onlyIf { !version.endsWith("SNAPSHOT") }
+    dependsOn build, publishPlugins, uploadArchives
 }
