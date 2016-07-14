@@ -1,0 +1,24 @@
+import org.gradle.internal.os.OperatingSystem
+
+apply plugin : 'org.ysb33r.gnumake'
+
+
+gnumake {
+    if(OperatingSystem.current().isWindows()) {
+        executable  "cmd.exe"
+        execArgs    '/c', file("${projectDir}/fake-make.bat").absolutePath
+    } else {
+        executable  "sh"
+        execArgs    "${projectDir}/fake-make.sh"
+    }
+}
+
+make {
+    flags DESTDIR : 'foo/bar'
+    targets 'build','install'
+    environment foo : 'bar'
+}
+
+task runGradleTest {
+    dependsOn 'make'
+}

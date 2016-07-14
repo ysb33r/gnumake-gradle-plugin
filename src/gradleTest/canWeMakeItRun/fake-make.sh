@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # ============================================================================
-# (C) Copyright Schalk W. Cronje 2013-2016
+# (C) Copyright Schalk W. Cronje 2013-2015
 #
 # This software is licensed under the Apache License 2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for license details
@@ -14,4 +14,3 @@
 #
 
 echo fake-make $@
-env

@@ -10,36 +10,49 @@
 //
 // ============================================================================
 
-buildscript {
-    repositories {
-        jcenter()
-	    mavenLocal()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'org.ysb33r.gradle:bintray:1.5'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
-        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
-        classpath 'org.ysb33r.gradle:gradletest:0.5.5'
-        classpath 'gradle.plugin.nl.javadude.gradle.plugins:license-gradle-plugin:0.12.1'
-    }
+//buildscript {
+//    repositories {
+//        jcenter()
+//	    mavenLocal()
+//        maven {
+//            url "https://plugins.gradle.org/m2/"
+//        }
+//    }
+//    dependencies {
+//        classpath 'org.ysb33r.gradle:bintray:1.5'
+//        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.1.0'
+//        classpath "com.gradle.publish:plugin-publish-plugin:0.9.0"
+//
+//        // See: https://github.com/hierynomus/license-gradle-plugin/issues/67
+//        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0', {
+//            exclude module : 'guava'
+//        }
+//    }
+//}
+
+//apply plugin : 'org.ysb33r.bintray'
+//apply plugin : 'org.ysb33r.gradletest'
+//apply plugin : 'groovy'
+//apply plugin : 'maven'
+//apply plugin : 'com.jfrog.artifactory'
+//apply plugin : 'com.gradle.plugin-publish'
+//apply plugin : 'com.github.hierynomus.license'
+
+
+plugins {
+    id 'com.gradle.build-scan' version '1.0'
+    id 'groovy'
+    id 'maven'
+    id 'org.ysb33r.bintray' version '1.5'
+    id 'org.ysb33r.gradletest' version '1.0-beta3'
+    id 'com.jfrog.artifactory' version '3.1.0'
+    id 'com.gradle.plugin-publish' version '0.9.4'
+    id 'com.github.hierynomus.license' version '0.13.1'
 }
-
-
-
-apply plugin : 'org.ysb33r.bintray'
-apply plugin : 'groovy'
-apply plugin : 'maven'
-apply plugin : 'com.jfrog.artifactory'
-apply plugin : 'com.gradle.plugin-publish'
-apply plugin : 'com.github.hierynomus.license'
-apply plugin : 'org.ysb33r.gradletest'
 
 group = 'org.ysb33r.gradle'
 archivesBaseName = 'gnumake'
-version = '1.0.3-SNAPSHOT'
+version = '1.1'
 
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
@@ -57,7 +70,7 @@ repositories {
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    testCompile ('org.spockframework:spock-core:1.0-groovy-2.3') {
+    testCompile ("org.spockframework:spock-core:1.0-groovy-${GroovySystem.version.replaceAll(/\.\d+$/, '')}") {
         exclude module : 'groovy-all'
     }
 }
@@ -82,6 +95,12 @@ jar {
     manifest {
         attributes 'Implementation-Title': moduleName, 'Implementation-Version': version
     }
+}
+
+
+gradleTest {
+    versions '2.0','2.2','2.3','2.4','2.5','2.6','2.8','2.12','2.13'
+    dependsOn jar
 }
 
 artifactory {
@@ -152,15 +171,7 @@ license {
     mapping {
         groovy ='DOUBLESLASH_STYLE'
     }
-    ext.year = '2013-2015'
+    ext.year = '2013-2016'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc', '**/*.md','**/*.properties'])
-}
-
-gradleLocations {
-    downloadToGradleUserHome = true
-}
-
-gradleTest {
-    versions '2.0','2.2','2.4','2.8','2.10','2.12'
-    dependsOn jar
+    exclude '**/*CompatibilitySpec.groovy'
 }
