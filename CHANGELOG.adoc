@@ -1,6 +1,6 @@
 = CHANGELOG
 
-== Version 1.1 Roadmap
+== Version 1.1
 
 * https://github.com/ysb33r/gnumake-gradle-plugin/issues/5[#5] - Gradle upgrade to v 2.12
 * Upgradle plugin to be built by Gradle 2.14
