@@ -3,17 +3,19 @@
 Provides a wrapper for calling GNU Make from Gradle. This is especially useful
 for projects migrating to Gradle or when constructing complex build systems of which
 some components utilise GNU make as it build tool. Most common command-line switches
-are supported, but for full flexibiliy it is possible to add any additional switch via 
+are supported, but for full flexibility it is possible to add any additional switch via
 the *switches* property.
 
 == Previous versions of this document
 
+* 1.0 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_1_0/README.adoc
 * 0.3 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_3/README.md
 * 0.2 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_2/README.md
 * 0.0.9 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/0.0.9_RELEASE/README.md
 
 == Known compatibility
 
+* 1.1 - Gradle 2.0 - 2.14
 * 1.0 - Gradle 2.0
 * 0.3 - Gradle 2.0
 * 0.2 - Gradle 2.0
@@ -33,7 +35,7 @@ buildscript {
       }
   }
   dependencies {
-    classpath 'org.ysb33r.gradle:gnumake:1.0'
+    classpath 'org.ysb33r.gradle:gnumake:1.1'
   }
 }
 
@@ -51,7 +53,7 @@ plugins {
 
 == Global configuration
 
-With the release of 1.0 there is a project extension `gnumake`, which allows defaults to be set
+Sinc the release of 1.0 there is a project extension `gnumake`, which allows defaults to be set
 for all `GnuMakeBuild` tasks
 
 [source,groovy]

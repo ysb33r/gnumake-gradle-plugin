@@ -1,6 +1,6 @@
 //
 // ============================================================================
-// (C) Copyright Schalk W. Cronje 2013-2015
+// (C) Copyright Schalk W. Cronje 2013-2016
 //
 // This software is licensed under the Apache License 2.0
 // See http://www.apache.org/licenses/LICENSE-2.0 for license details
@@ -12,6 +12,7 @@
 // ============================================================================
 //
 
+import org.gradle.api.logging.LogLevel
 import org.ysb33r.gradle.gnumake.internal.FakeExecutor
 import spock.lang.*
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
@@ -21,24 +22,14 @@ import org.gradle.internal.os.OperatingSystem
 
 class GnuMakeBuildSpec extends spock.lang.Specification {
 
-    static def stashedSystemOut = System.out
-
     Project project
     def gnumake
-    def systemOut
     boolean isWindows = OperatingSystem.current().isWindows()
-
-    void captureStdOut() {
-        systemOut = new ByteArrayOutputStream()
-        System.out = new PrintStream(systemOut)
-    }
 
     void setup() {
         project = ProjectBuilder.builder().build()
         project.apply plugin:'org.ysb33r.gnumake'
         gnumake = project.task('foomake', type: GnuMakeBuild )
-        System.out = stashedSystemOut
-        systemOut = null
     }
 
     def "Defaults on newly created Task"() {
@@ -233,62 +224,50 @@ class GnuMakeBuildSpec extends spock.lang.Specification {
 
     def "'tasks' is an alias for 'targets', therefore writing tasks, should update targets"() {
         given:
-          captureStdOut()
-            gnumake.tasks = ['build','install']
+        gnumake.tasks = ['build','install']
 
         expect:
-            gnumake.targets == [ 'build','install' ]
-            systemOut.toString().contains('deprecated')
+        gnumake.targets == [ 'build','install' ]
     }
 
     def "'tasks' is an alias for 'targets', therefore writing targets, tasks should reflect"() {
         given:
-          captureStdOut()
-            gnumake.targets  'build','install'
+        gnumake.targets  'build','install'
 
         expect:
-            gnumake.tasks == [ 'build','install' ]
-            systemOut.toString().contains('deprecated')
+        gnumake.tasks == [ 'build','install' ]
     }
 
     def "BuildFile is an alias for Makefile, therefore writing buildFile, should update makefile"() {
         given:
-          captureStdOut()
-            gnumake.buildFile = 'GNUMakefile'
+        gnumake.buildFile = 'GNUMakefile'
 
         expect:
-            gnumake.makefile == 'GNUMakefile'
-            systemOut.toString().contains('deprecated')
+        gnumake.makefile == 'GNUMakefile'
     }
 
     def "BuildFile are an alias for Makefile, therefore writing makefile, buildFile should reflect"() {
         given:
-          captureStdOut()
-            gnumake.makefile = 'GNUMakefile'
+        gnumake.makefile = 'GNUMakefile'
 
         expect:
-            gnumake.buildFile == 'GNUMakefile'
-            systemOut.toString().contains('deprecated')
+        gnumake.buildFile == 'GNUMakefile'
     }
 
     def "Dir is an alias for chDir, therefore writing dir, should update chDir"() {
         given:
-          captureStdOut()
-            gnumake.dir  '/path/to/somewhere'
+        gnumake.dir  '/path/to/somewhere'
 
         expect:
-            gnumake.chDir == project.file('/path/to/somewhere')
-            systemOut.toString().contains('deprecated')
+        gnumake.chDir == project.file('/path/to/somewhere')
     }
 
     def "Dir is an alias for chDir, therefore writing chDir, dir should reflect"() {
         given:
-          captureStdOut()
-            gnumake.chDir '/path/to/somewhere'
+        gnumake.chDir '/path/to/somewhere'
 
         expect:
-            gnumake.dir == project.file('/path/to/somewhere')
-            systemOut.toString().contains('deprecated')
+        gnumake.dir == project.file('/path/to/somewhere')
     }
 
     def "execArgs must follow executable directly before anything else"() {

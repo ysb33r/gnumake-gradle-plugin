@@ -1,6 +1,6 @@
 @REM
 @REM ============================================================================
-@REM (C) Copyright Schalk W. Cronje 2013-2016
+@REM (C) Copyright Schalk W. Cronje 2013-2015
 @REM
 @REM This software is licensed under the Apache License 2.0
 @REM See http://www.apache.org/licenses/LICENSE-2.0 for license details
@@ -14,4 +14,3 @@
 
 @echo off
 echo fake-make  %1 %2 %3 %4 %5 %6 %7 %8 %9
-set
