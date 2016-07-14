@@ -1,8 +1,10 @@
 = CHANGELOG
 
-== Version 1.2 Roadmap
+== Version 1.1.1
 
-* https://github.com/ysb33r/gnumake-gradle-plugin/issues/6[#6] - Variables should be quoted under Windows.
+=== Bugs
+* https://github.com/ysb33r/gnumake-gradle-plugin/issues/6[#6] - Variables should be quoted under Windows. (Fixed
+  issue seen under `1.1` release).
 
 == Version 1.1
 

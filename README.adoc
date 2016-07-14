@@ -6,8 +6,12 @@ some components utilise GNU make as it build tool. Most common command-line swit
 are supported, but for full flexibility it is possible to add any additional switch via
 the *switches* property.
 
+*NOTE*: There is an issue with the `1.1` release under Windows which prevents flags form being passed correctly to Make. 
+ If you use that feature you should hold back from upgrading.
+ 
 == Previous versions of this document
 
+* 1.1 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_1_1/README.adoc
 * 1.0 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_1_0/README.adoc
 * 0.3 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_3/README.md
 * 0.2 - https://github.com/ysb33r/gnumake-gradle-plugin/blob/GNUMAKE_RELEASE_0_2/README.md
@@ -15,7 +19,8 @@ the *switches* property.
 
 == Known compatibility
 
-* 1.1 - Gradle 2.0 - 2.14
+* 1.1.1 - Gradle 2.0 - 2.14
+* 1.1 - Gradle 2.0 - 2.14 (Not recommended for Windows platforms)
 * 1.0 - Gradle 2.0
 * 0.3 - Gradle 2.0
 * 0.2 - Gradle 2.0
