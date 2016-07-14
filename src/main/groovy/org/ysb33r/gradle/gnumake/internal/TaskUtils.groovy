@@ -15,6 +15,7 @@
 package org.ysb33r.gradle.gnumake.internal
 
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
 import org.gradle.process.ExecResult
 import org.ysb33r.gradle.gnumake.GnuMakeBuild
 import org.ysb33r.gradle.gnumake.GnuMakeExtension
@@ -23,6 +24,8 @@ import org.ysb33r.gradle.gnumake.GnuMakeExtension
  * @author Schalk W. Cronjé
  */
 class TaskUtils {
+    static final boolean IS_WINDOWS = OperatingSystem.current().isWindows()
+
     static List<String> buildCmdArgs(Project project,GnuMakeBuild task,List<String> targets) {
 
         List<String> execArgs = []
@@ -43,7 +46,9 @@ class TaskUtils {
 
         def includes = (task.includeDirs.files.collectMany { ['-I', "${it.absolutePath}"] })
 
-        def flags = task.flags.collect { k, v -> "$k=$v" }
+        def flags = task.flags.collect { k, v ->
+            IS_WINDOWS ? "\"$k=$v\"": "$k=$v"
+        }
 
         execArgs + switches  + includes + targets + flags + task.switches
     }
