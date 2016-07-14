@@ -147,10 +147,20 @@ license {
     exclude '**/*CompatibilitySpec.groovy'
 }
 
+task updateReadmeWithReleaseNumber {
+    group 'Publication'
+    description 'Updates the README with the release version number'
+    onlyIf { !version.endsWith("SNAPSHOT") }
+
+    doLast {
+        File readme = file("${projectDir}/README.adoc")
+        readme.text = readme.text.replaceFirst(/:revnumber:\s?[\d.]+/,":revnumber: ${version}")
+    }
+}
 
 task release {
     group 'Publication'
     description 'Build, test & push publications'
     onlyIf { !version.endsWith("SNAPSHOT") }
-    dependsOn build, publishPlugins, uploadArchives
+    dependsOn updateReadmeWithReleaseNumber, build, publishPlugins, uploadArchives
 }

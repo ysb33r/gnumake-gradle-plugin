@@ -1,4 +1,5 @@
 = GNU Make Gradle Plugin
+:revnumber: 1.1.1
 
 Provides a wrapper for calling GNU Make from Gradle. This is especially useful
 for projects migrating to Gradle or when constructing complex build systems of which
@@ -40,7 +41,7 @@ buildscript {
       }
   }
   dependencies {
-    classpath 'org.ysb33r.gradle:gnumake:1.1'
+    classpath 'org.ysb33r.gradle:gnumake:{revnumber}'
   }
 }
 
@@ -52,7 +53,7 @@ or if you use Gradle 2.1+
 [source,groovy]
 ----
 plugins {
-  id 'org.ysb33r.gnumake' version '1.0'
+  id 'org.ysb33r.gnumake' version '{revnumber}'
 }
 ----
 
